@@ -1,0 +1,9 @@
+{
+    "urls": {
+        "mangaList": "manga",
+        "tags": "manga/tag"
+    },
+    "baseUrl": {
+        "mangaDex": "https://api.mangadex.org/"
+    }
+}
