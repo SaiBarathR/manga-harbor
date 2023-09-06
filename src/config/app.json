@@ -1,7 +1,8 @@
 {
     "urls": {
         "mangaList": "manga",
-        "tags": "manga/tag"
+        "tags": "manga/tag",
+        "grpMangaStats":"statistics/manga"
     },
     "baseUrl": {
         "mangaDex": "https://api.mangadex.org/"
