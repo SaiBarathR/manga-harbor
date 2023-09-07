@@ -20,7 +20,7 @@ function SearchBar() {
     }
 
     return (
-        <Box className="min-w-[300px] w-[80%]">
+        <Box className="min-w-[300px] max-w-[1200px] w-[80%]">
             <AutoComplete openOnFocus disableFilter={true} >
                 <InputGroup>
                     <InputLeftElement pointerEvents='none'>
@@ -58,7 +58,7 @@ export function Items({ manga, dark }) {
         return <Tag rounded={'md'} gap={1} fontWeight={'bold'} width={'fit-content'} colorScheme={colorScheme}>{children}</Tag>
     }
 
-    return <Box bg={dark ? 'blackAlpha.600' : '#adcdf7'} className="flex w-full p-1 my-2 mx-8 md:p-2 rounded-md shadow-xl hover:scale-105 delay-75 transition ease-in-out">
+    return <Box bg={dark ? 'blackAlpha.600' : '#adcdf7'} className="flex w-full p-1 my-2 mx-8 lg:mx-10 md:p-2 rounded-md shadow-xl hover:scale-105 delay-75 transition ease-in-out">
         {loading && <Skeleton height={'46px'} width={'46px'} />}
         <Image boxSize='46px' aspectRatio={'square'} objectFit='contain' src={manga.image} alt='m' display={loading && 'none'}
             onLoad={() => setLoading(false)}
