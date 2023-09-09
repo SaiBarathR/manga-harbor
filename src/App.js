@@ -1,4 +1,4 @@
-import { Container, useColorModeValue } from '@chakra-ui/react';
+import { Center, Container, useColorModeValue } from '@chakra-ui/react';
 import './App.css';
 import Home from './Pages/Home';
 
@@ -8,7 +8,9 @@ function App() {
 
   return (
     <Container maxW={'none'} className="App" bg={bg} color={color}>
-      <Home />
+      <Center>
+        <Home />
+      </Center>
     </Container>
   );
 }
