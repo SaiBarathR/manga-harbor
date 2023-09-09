@@ -11,19 +11,11 @@ const initialState = {
 export const fetchMangaByName = createAsyncThunk(
     'search/fetchMangaByName',
     async (name) => {
-        const resp = await HttpService.get('mangaList', {
-            limit: 4,
-            title: name,
-            includes: ['cover_art']
-        })
-        const statRes = await HttpService.get('grpMangaStats', {
-            manga: resp.data.map((manga) => manga.id)
-        })
+        const resp = await HttpService.get('mangaList', { limit: 4, title: name, includes: ['cover_art'] })
+        const statRes = await HttpService.get('grpMangaStats', { manga: resp.data.map((manga) => manga.id) })
         return { ...resp, ...statRes }
-
     }
 )
-
 
 function getColorName(rating) {
     switch (true) {
@@ -56,14 +48,11 @@ export const searchSlice = createSlice({
     name: 'search',
     initialState,
     reducers: {
-        setSearchValue: (state, action) => {
-            state.searchValue = action.payload;
-
-        }
+        setSearchValue: (state, action) => { state.searchValue = action.payload },
+        setLoading: (state, action) => { state.loading = action.payload }
     },
     extraReducers: (builder) => {
         builder.addCase(fetchMangaByName.fulfilled, (state, action) => {
-            state.loading = false;
             const stats = action.payload.statistics
             state.options = action.payload.data.map((manga, index) => {
                 let relationShip = manga.relationships.filter((dataType) => dataType.type === 'cover_art')[0]
@@ -77,6 +66,7 @@ export const searchSlice = createSlice({
                     follows: stats[manga.id].follows
                 }
             })
+            state.loading = false;
         })
         builder.addCase(fetchMangaByName.pending, (state) => {
             state.loading = true;
@@ -88,6 +78,6 @@ export const searchSlice = createSlice({
     }
 })
 
-export const { setSearchValue } = searchSlice.actions
+export const { setSearchValue, setLoading } = searchSlice.actions
 
 export default searchSlice.reducer

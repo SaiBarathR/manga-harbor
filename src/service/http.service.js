@@ -19,32 +19,9 @@ const HttpService = (function () {
     }
 
     service.get = function (key, options) {
-        return API.get(urls[key], { params: options })
-            .then(res => {
-                return res.data;
-            }).catch(e => {
-                return e.response.data || e.message
-            });
-    }
-
-
-    service.postWithHeaders = function (key, data, headers) {
-        return API.post(urls[key], data, { headers: headers }).then(res => {
-            return res.data;
-        }).catch(e => {
-            console.log('ERROR:', e);
-            checkNetorkError(e)
-            return e.message
-        });
-    }
-
-    service.getWithHeaders = function (key, options, headers) {
-        return API.get(urls[key], { params: options, headers }).then(res => {
-            return res.data;
-        }).catch(e => {
-            console.log('ERROR:', e);
-            checkNetorkError(e)
-            return e.message
+        const signal = new AbortController().signal
+        return API.get(urls[key], { params: options, signal: signal }).then(res => { return res.data }).catch(e => {
+            return e.response.data || e.message
         });
     }
 
@@ -56,6 +33,5 @@ const HttpService = (function () {
     }
     return service;
 }());
-
 
 export default HttpService;
