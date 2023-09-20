@@ -1,10 +1,12 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import mangaAppSlice from './mangaAppSlice';
 import searchSlice from './searchSlice';
+import mangaSlice from './mangaSlice';
 
 const combinedMangaAppReducers = combineReducers({
     mangaApp: mangaAppSlice,
-    search: searchSlice
+    search: searchSlice,
+    manga: mangaSlice,
 });
 
 export const rootReducer = (state, action) => {
