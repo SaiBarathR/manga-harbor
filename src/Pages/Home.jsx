@@ -11,7 +11,7 @@ const Home = () => {
         <Box className="max-w-[2560px] w-full">
             <Header />
             <Grid
-                templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)", xl: "repeat(4, 1fr)" }}
+                templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(5, 1fr)", xl: "repeat(6, 1fr)" }}
                 gap={6}
                 p={5}
             >
