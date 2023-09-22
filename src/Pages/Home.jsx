@@ -1,28 +1,27 @@
-import { Box, Grid } from "@chakra-ui/react";
-import Header from "./Header";
-import MangaCard from "./commonComponents/MangaCard";
-import React from "react";
+
+import { Box, Button } from "@chakra-ui/react";
+import Header from "./Header"
+import React, { useMemo } from "react";
+import { createWebWorker } from '../worker/createWebWorker'
+import { useWebWorker } from '../worker/useWebWorker'
+import simpleWorker from "../worker/simpleWorker";
 
 const Home = () => {
-    // Let's assume you have a list of mangas
-    const mangas = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; // This is just for demonstration purposes
 
-    return (
-        <Box className="max-w-[2560px] w-full">
-            <Header />
-            <Grid
-                templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(5, 1fr)", xl: "repeat(6, 1fr)" }}
-                gap={6}
-                p={5}
-            >
-                {mangas.map(manga => (
-                    <MangaCard key={manga} isLoading={true} />
-                    //Example of manga
-                    /*<MangaCard isLoading={false} title="Naruto" author="Masashi Kishimoto" imageUrl="https://m.media-amazon.com/images/I/71gwzyXnaNL._AC_UF1000,1000_QL80_.jpg" />*/
-                ))}
-            </Grid>
-        </Box>
+    const workerInstance = useMemo(() => createWebWorker(simpleWorker), []);
+    const { error, startProcessing, } = useWebWorker(workerInstance);
+    console.log("🚀 ~ file: Home.jsx:12 ~ Home ~ error:", error)
+
+    return (<Box className="max-w-[2560px] w-full">
+        <Header />
+        <Button onClick={
+            () => {
+                startProcessing([{ name: "1", img: "https://uploads.mangadex.org/data/781e590f147e501f280020762a764a5e/1-9bbc10bdb272795a6fc1d5fcea07703391654232afb6e51920d666535924cfba.png" },
+                { name: "2", img: "https://uploads.mangadex.org/data/c66649ca3e87de8bcb1ed2f7e02b3cda/2-12a2ade33a956d75691048b955e87a12f894f047188c9edd90b6fab203b48310.png" },])
+            }} >hi</Button>
+    </Box>
     );
 }
 
 export default Home;
+

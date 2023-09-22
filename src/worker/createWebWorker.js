@@ -25,6 +25,12 @@
 // module.exports = worker_script;
 
 // eslint-disable-next-line no-restricted-globals
+// export const createWebWorker = (worker) => {
+//     let code = worker.toString();
+//     code = code.substring(code.indexOf("{") + 1, code.lastIndexOf("}"));
+//     const blob = new Blob([code], { type: "application/javascript" });
+//     return new Worker(URL.createObjectURL(blob), { type: "module", });
+// };
 
 export const createWebWorker = (worker: any) => {
     const code = worker.toString();
