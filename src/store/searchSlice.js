@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import HttpService from '../service/http.service'
+import MangaService from '../service/mangaService'
 
 const initialState = {
     searchValue: "",
@@ -11,9 +11,13 @@ const initialState = {
 export const fetchMangaByName = createAsyncThunk(
     'search/fetchMangaByName',
     async (name) => {
-        const resp = await HttpService.get('mangaList', { limit: 4, title: name, includes: ['cover_art'] })
-        const statRes = await HttpService.get('grpMangaStats', { manga: resp.data.map((manga) => manga.id) })
-        return { ...resp, ...statRes }
+        try {
+            const resp = await MangaService.get('search', name)
+            return { ...resp.mangaData, ...resp.statsResponse }
+        }
+        catch (e) {
+            console.log(e)
+        }
     }
 )
 
