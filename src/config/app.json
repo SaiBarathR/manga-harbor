@@ -2,9 +2,11 @@
     "urls": {
         "mangaList": "manga",
         "tags": "manga/tag",
-        "grpMangaStats":"statistics/manga"
+        "grpMangaStats": "statistics/manga",
+        "search": "manga/search/"
     },
     "baseUrl": {
+        "springBoot": "http://localhost:9000/",
         "mangaDex": "https://api.mangadex.org/"
     }
 }
