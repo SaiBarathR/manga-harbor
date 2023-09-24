@@ -59,10 +59,9 @@ export const searchSlice = createSlice({
         builder.addCase(fetchMangaByName.fulfilled, (state, action) => {
             const stats = action.payload.statistics
             state.options = action.payload.data.map((manga, index) => {
-                let relationShip = manga.relationships.filter((dataType) => dataType.type === 'cover_art')[0]
                 return {
                     title: manga.attributes.title.en || manga.attributes.title.ja || manga.attributes.altTitles[0].en || '',
-                    image: relationShip.attributes ? ('https://mangadex.org/covers/' + manga.id + '/' + relationShip.attributes.fileName) : "",
+                    image: manga.image,
                     year: manga.attributes.year,
                     status: manga.attributes.status,
                     id: manga.id,
