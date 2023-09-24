@@ -1,10 +1,11 @@
 import { BellIcon, Search2Icon, SmallCloseIcon, StarIcon } from "@chakra-ui/icons";
-import { Box, IconButton, Image, InputGroup, InputLeftElement, InputRightElement,  Skeleton, Stack, Tag, Text, Tooltip, useColorMode } from "@chakra-ui/react";
+import { Box, IconButton, Image, InputGroup, InputLeftElement, InputRightElement, Skeleton, Stack, Tag, Text, Tooltip, useColorMode } from "@chakra-ui/react";
 import { AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList } from "@choc-ui/chakra-autocomplete";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMangaByName, setLoading, setSearchValue } from "../../store/searchSlice";
 import { useEffect, useMemo, useState } from "react";
 import { mangaStatusColors } from "../../config/constants";
+import MangaService from "../../service/mangaService";
 
 function SearchBar() {
     const searchValue = useSelector((state) => state.search.searchValue);
@@ -19,7 +20,7 @@ function SearchBar() {
         !loading && dispatch(setLoading(true))
         const getData = setTimeout(() => { searchValue && dispatch(fetchMangaByName(searchValue)) }, 400)
         return () => clearTimeout(getData);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchValue])
 
     return (
@@ -59,16 +60,24 @@ function SearchBar() {
 
 export function Items({ manga, dark }) {
     const [loading, setLoading] = useState(true)
+    const [imageData, setImageData] = useState(false);
+    const TagRenderer = ({ colorScheme, children }) => <Tag rounded={'md'} gap={1} fontWeight={'bold'} width={'fit-content'} colorScheme={colorScheme}>{children}</Tag>
 
-    function TagRenderer({ colorScheme, children }) {
-        return <Tag rounded={'md'} gap={1} fontWeight={'bold'} width={'fit-content'} colorScheme={colorScheme}>{children}</Tag>
+    const getCoverImage = async () => {
+        try { setImageData(URL.createObjectURL(new Blob([await MangaService.get('cover', manga.image, 'image')], { type: 'image/jpeg' }))); }
+        catch (error) { console.log(error) }
     }
 
+    useEffect(() => {
+        getCoverImage()
+    }, [manga.image])
+
+
     return <Box bg={dark ? 'blackAlpha.600' : '#adcdf7'} className="flex w-full p-1 items-center  my-2 mx-8 lg:mx-10 md:p-2 lg:p-4 rounded-md shadow-xl hover:scale-105 delay-75 transition ease-in-out">
-        {loading && <Skeleton height={'52px'} width={'52px'} />}
-        <Image boxSize='52px' className="aspect-square" aspectRatio={'square'} objectFit='contain' src={manga.image} alt='m' display={loading && 'none'}
-            onLoad={() => setLoading(false)}
-        />
+        {!imageData && loading ? <Box width={'52px'}> <Skeleton height={'52px'} width={'52px'} /> </Box> :
+            <Image boxSize={'8%'} minW={'52px'} minH={'52px'} className="aspect-square" aspectRatio={'square'} objectFit='contain' src={imageData} alt='m' display={!imageData && loading && 'none'}
+                onLoad={() => setLoading(false)}
+            />}
         <Box className="ml-2">
             <Tooltip label={manga.title} hasArrow arrowSize={10} placement="top" >
                 <Text noOfLines={2}>{manga.title}</Text>
