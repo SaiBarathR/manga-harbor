@@ -1,5 +1,5 @@
 import { BellIcon, Search2Icon, SmallCloseIcon, StarIcon } from "@chakra-ui/icons";
-import { Box, IconButton, Image, InputGroup, InputLeftElement, InputRightElement, List, ListItem, Skeleton, Stack, Tag, Text, Tooltip, useColorMode } from "@chakra-ui/react";
+import { Box, IconButton, Image, InputGroup, InputLeftElement, InputRightElement,  Skeleton, Stack, Tag, Text, Tooltip, useColorMode } from "@chakra-ui/react";
 import { AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList } from "@choc-ui/chakra-autocomplete";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMangaByName, setLoading, setSearchValue } from "../../store/searchSlice";
@@ -19,6 +19,7 @@ function SearchBar() {
         !loading && dispatch(setLoading(true))
         const getData = setTimeout(() => { searchValue && dispatch(fetchMangaByName(searchValue)) }, 400)
         return () => clearTimeout(getData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchValue])
 
     return (
