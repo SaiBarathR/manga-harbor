@@ -6,9 +6,10 @@ const MangaService = (function () {
     var service = {};
     const urls = app.urls
 
-    service.get = async function (key, params = '', headers = '') {
+    service.get = async function (key, params = '', type = 'json', headers = '') {
         const resp = await fetch(baseURL + urls[key] + params)
-        return resp.json() || resp
+        if (!resp.ok) throw new Error('Network resp was not ok');
+        return type === 'image' ? resp.arrayBuffer() : resp.json() || resp;
     }
 
     return service;
