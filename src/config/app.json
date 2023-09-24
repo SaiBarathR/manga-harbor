@@ -3,7 +3,8 @@
         "mangaList": "manga",
         "tags": "manga/tag",
         "grpMangaStats": "statistics/manga",
-        "search": "manga/search/"
+        "search": "manga/search/",
+        "cover": "manga/cover?url="
     },
     "baseUrl": {
         "springBoot": "http://localhost:9000/",
