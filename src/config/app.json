@@ -1,6 +1,6 @@
 {
     "urls": {
-        "mangaList": "manga",
+        "manga": "manga/",
         "tags": "manga/tag",
         "grpMangaStats": "statistics/manga",
         "search": "manga/search/",
