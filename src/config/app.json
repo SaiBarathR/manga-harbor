@@ -4,7 +4,8 @@
         "tags": "manga/tag",
         "grpMangaStats": "statistics/manga",
         "search": "manga/search/",
-        "cover": "manga/cover?url="
+        "cover": "manga/cover?url=",
+        "download":"manga/download/"
     },
     "baseUrl": {
         "springBoot": "http://localhost:9000/",
