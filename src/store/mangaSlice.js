@@ -7,7 +7,7 @@ const initialState = {
 }
 
 export const fetchMangaById = createAsyncThunk(
-    'search/fetchMangaById',
+    'manga/fetchMangaById',
     async (id) => {
         try {
             const resp = await MangaService.get('manga', id)
