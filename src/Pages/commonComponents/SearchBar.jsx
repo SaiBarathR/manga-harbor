@@ -6,6 +6,7 @@ import { fetchMangaByName, setLoading, setSearchValue } from "../../store/search
 import { useEffect, useMemo, useState } from "react";
 import { mangaStatusColors } from "../../config/constants";
 import MangaService from "../../service/mangaService";
+import { setManga } from "../../store/mangaSlice";
 
 function SearchBar() {
     const searchValue = useSelector((state) => state.search.searchValue);
@@ -18,10 +19,16 @@ function SearchBar() {
 
     useEffect(() => {
         !loading && dispatch(setLoading(true))
-        const getData = setTimeout(() => { searchValue && dispatch(fetchMangaByName(searchValue)) }, 400)
+        const getData = setTimeout(() => { searchValue && dispatch(fetchMangaByName(searchValue)) }, 300)
         return () => clearTimeout(getData);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchValue])
+
+    const onClickSearchItem = (manga) => {
+        return () => {
+            dispatch(setManga(manga))
+        }
+    }
 
     return (
         <Box className="min-w-[300px] max-w-[1200px] w-[80%]">
@@ -48,7 +55,7 @@ function SearchBar() {
                     loadingState={<Stack className="w-[100%] flex flex-col items-center">{[1, 2, 3, 4].map((item) => <Skeleton key={item} rounded={'6px'} className="my-2  rounded-md w-[92%] md:w-[97%] h-[45px]" />)}</Stack>}
                 >
                     {options.map((manga, index) => {
-                        return <AutoCompleteItem key={`option-${manga.id}`} value={manga.title} align="center" className="searchbarAutocompleListItem capitalize">
+                        return <AutoCompleteItem onClick={onClickSearchItem(manga)} key={`option-${manga.id}`} value={manga.title} align="center" className="searchbarAutocompleListItem capitalize">
                             {loading ? <></> : <Items manga={manga} dark={dark} />}
                         </AutoCompleteItem>
                     })}
@@ -69,7 +76,8 @@ export function Items({ manga, dark }) {
     }
 
     useEffect(() => {
-        getCoverImage()
+        const getData = setTimeout(() => { getCoverImage() }, 200)
+        return () => clearTimeout(getData)
     }, [manga.image])
 
 
