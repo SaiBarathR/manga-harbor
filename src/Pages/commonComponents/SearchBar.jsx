@@ -3,10 +3,10 @@ import { Box, IconButton, Image, InputGroup, InputLeftElement, InputRightElement
 import { AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList } from "@choc-ui/chakra-autocomplete";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMangaByName, setLoading, setSearchValue } from "../../store/searchSlice";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { mangaStatusColors } from "../../config/constants";
-import MangaService from "../../service/mangaService";
 import { setManga } from "../../store/mangaSlice";
+import useMangaImage from "../../hooks/useMangaImage";
 
 function SearchBar() {
     const searchValue = useSelector((state) => state.search.searchValue);
@@ -65,26 +65,14 @@ function SearchBar() {
     );
 }
 
+export const TagRenderer = ({ colorScheme, children, size = 'sm' }) => <Tag rounded={'md'} gap={size = 'lg' ? 3 : 1} p={size = 'lg' && 2} fontSize={size = 'lg' && 18} fontWeight={'bold'} width={'fit-content'} colorScheme={colorScheme}>{children}</Tag>
+
 export function Items({ manga, dark }) {
-    const [loading, setLoading] = useState(true)
-    const [imageData, setImageData] = useState(false);
-    const TagRenderer = ({ colorScheme, children }) => <Tag rounded={'md'} gap={1} fontWeight={'bold'} width={'fit-content'} colorScheme={colorScheme}>{children}</Tag>
-
-    const getCoverImage = async () => {
-        try { setImageData(URL.createObjectURL(new Blob([await MangaService.get('cover', manga.image, 'image')], { type: 'image/jpeg' }))); }
-        catch (error) { console.log(error) }
-    }
-
-    useEffect(() => {
-        const getData = setTimeout(() => { getCoverImage() }, 200)
-        return () => clearTimeout(getData)
-    }, [manga.image])
-
+    const imageData = useMangaImage(manga.image)
 
     return <Box bg={dark ? 'blackAlpha.600' : '#adcdf7'} className="flex w-full p-1 items-center  my-2 mx-8 lg:mx-10 md:p-2 lg:p-4 rounded-md shadow-xl hover:scale-105 delay-75 transition ease-in-out">
-        {!imageData && loading ? <Box width={'52px'}> <Skeleton height={'52px'} width={'52px'} /> </Box> :
-            <Image boxSize={'8%'} minW={'52px'} minH={'52px'} className="aspect-square" aspectRatio={'square'} objectFit='contain' src={imageData} alt='m' display={!imageData && loading && 'none'}
-                onLoad={() => setLoading(false)}
+        {!imageData ? <Box width={'52px'}> <Skeleton height={'52px'} width={'52px'} /> </Box> :
+            <Image boxSize={'8%'} minW={'52px'} minH={'52px'} className="aspect-square" aspectRatio={'square'} objectFit='contain' src={imageData} alt='m' display={!imageData && 'none'}
             />}
         <Box className="ml-2">
             <Tooltip label={manga.title} hasArrow arrowSize={10} placement="top" >
