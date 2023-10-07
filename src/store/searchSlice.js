@@ -57,16 +57,16 @@ export const searchSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(fetchMangaByName.fulfilled, (state, action) => {
-            const stats = action.payload.statistics
+            const stats = action.payload && (action.payload.statistics || null)
             state.options = action.payload.data.map((manga, index) => {
                 return {
-                    title: manga.attributes.title.en || manga.attributes.title.ja || manga.attributes.altTitles[0].en || '',
+                    title: manga.attributes.title.en || manga.attributes.title.ja || manga.attributes.altTitles[0].en || manga.attributes.title.ko || '',
                     image: manga.image,
                     year: manga.attributes.year,
                     status: manga.attributes.status,
                     id: manga.id,
-                    rating: { value: stats[manga.id].rating.average, color: getColorName(stats[manga.id].rating.average) },
-                    follows: stats[manga.id].follows
+                    rating: stats ? { value: stats[manga.id].rating.average, color: getColorName(stats[manga.id].rating.average) } : {},
+                    follows: stats ? stats[manga.id].follows : null,
                 }
             })
             state.loading = false;
