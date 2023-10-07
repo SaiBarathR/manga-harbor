@@ -3,6 +3,7 @@ import MangaService from '../service/mangaService'
 
 const initialState = {
     mangaDetails: {},
+    volumes: [],
     loading: false,
 }
 
@@ -12,6 +13,19 @@ export const fetchMangaById = createAsyncThunk(
         try {
             const resp = await MangaService.get('manga', id)
             return resp
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
+)
+
+export const fetchVolumeList = createAsyncThunk(
+    'manga/fetchVolumeList',
+    async (id) => {
+        try {
+            const resp = await MangaService.get('volumes', id)
+            return resp.reverse()
         }
         catch (e) {
             console.log(e)
@@ -36,6 +50,17 @@ export const mangaSlice = createSlice({
             state.loading = true;
         })
         builder.addCase(fetchMangaById.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message;
+        })
+        builder.addCase(fetchVolumeList.fulfilled, (state, action) => {
+            state.volumes = action.payload
+            state.loading = false;
+        })
+        builder.addCase(fetchVolumeList.pending, (state) => {
+            state.loading = true;
+        })
+        builder.addCase(fetchVolumeList.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message;
         })
