@@ -4,7 +4,7 @@ import Toolbar from "./Toolbar";
 import MangaDetails from "./MangaDetails";
 
 const Home = () => {
-    return (<Box className="max-w-[2560px] w-full h-screen">
+    return (<Box className="max-w-[2560px] w-full">
         <Header />
         <MangaDetails />
         <Toolbar />
