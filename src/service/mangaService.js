@@ -12,6 +12,12 @@ const MangaService = (function () {
         return type === 'image' ? resp.arrayBuffer() : resp.json() || resp;
     }
 
+    service.download = async function (key, params = '') {
+        const resp = await fetch(baseURL + urls[key] + params, { method: 'GET', responseType: 'blob' });
+        if (!resp.ok) throw new Error('Network resp was not ok');
+        if (resp.status === 200) return resp.blob()
+    }
+
     return service;
 }());
 
