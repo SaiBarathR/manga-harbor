@@ -15,7 +15,14 @@ const MangaService = (function () {
     service.download = async function (key, params = '') {
         const resp = await fetch(baseURL + urls[key] + params, { method: 'GET', responseType: 'blob' });
         if (!resp.ok) throw new Error('Network resp was not ok');
-        if (resp.status === 200) return resp.blob()
+        if (resp.status === 200) {
+            for (let header of resp.headers.entries()) {
+                if (header[0] === 'content-disposition') {
+                    const fileName = header[1].split('filename=')[1];
+                    return { fileName: fileName, file: await resp.blob() }
+                }
+            }
+        }
     }
 
     return service;

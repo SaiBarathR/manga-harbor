@@ -6,11 +6,11 @@ const initialState = {
     loading: false,
 }
 
-const downloadManga = async (blob) => {
-    const url = window.URL.createObjectURL(blob);
+const downloadManga = async (file, fileName) => {
+    const url = window.URL.createObjectURL(file);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'manga.zip';
+    a.download = fileName;
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);
@@ -21,8 +21,8 @@ export const downloadMangaById = createAsyncThunk(
     'manga/downloadMangaById',
     async (id) => {
         try {
-            const blob = await MangaService.download('download', id)
-            downloadManga(blob)
+            const { file, fileName } = await MangaService.download('download', id)
+            downloadManga(file, fileName)
         } catch (error) {
             console.error('An error occurred:', error);
         }
@@ -32,9 +32,9 @@ export const downloadMangaById = createAsyncThunk(
 export const downloadMangaByVolumeOrChapter = createAsyncThunk(
     'manga/downloadMangaByVolumeOrChapter',
     async (params, { dispatch, getState }) => {
-        try {    
-            const blob = await MangaService.download('download', params);
-            downloadManga(blob);
+        try {
+            const { file, fileName } = await MangaService.download('download', params);
+            downloadManga(file, fileName);
         } catch (error) {
             console.error('An error occurred:', error);
         }
