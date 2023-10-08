@@ -19,7 +19,7 @@ export default function MangaDetails() {
             dispatch(fetchMangaById(mangaDetails.id))
             dispatch(fetchVolumeList(mangaDetails.id))
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [mangaDetails.id])
 
     return mangaDetails.id && (loading ? <Skeleton className='h-[82vh] w-full'>
@@ -61,11 +61,10 @@ const ToolbarItems = ({ id }) => {
     const dispatch = useDispatch()
 
     const onClickDownload = async (volumeNumber) => {
-        dispatch(addVolumeToDownloadQueue({ id: id, volumeNumber: volumeNumber }))
-        dispatch(dowwnloadMangaByVolume({ id: id, volumeNumber: volumeNumber }))
+        dispatch(addVolumeToDownloadQueue({ id: id, volumeNumber: volumeNumber === 'none' ? 0 : volumeNumber }))
+        dispatch(dowwnloadMangaByVolume({ id: id, volumeNumber: volumeNumber === 'none' ? 0 : volumeNumber }))
 
     };
-
 
     return <Accordion className=" w-full" allowMultiple>
         <Grid templateColumns='repeat(6, 1fr)' gap={6} px={4} mb={20}>
