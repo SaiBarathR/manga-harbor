@@ -43,7 +43,7 @@ const MangaDetailsHeader = ({ manga, dispatch }) => {
     return <Box _dark={{ bg: 'blackAlpha.600' }} bg={'#adcdf7'}
         className="flex w-full p-1 items-center  my-2 mx-8 lg:mx-10 md:p-2 lg:p-4 rounded-md shadow-xl">
         {!imageData ? <Box width={'252px'}> <Skeleton height={'330px'} width={'202px'} /> </Box> :
-            <Image maxW={'10%'} maxH={'10%'} src={imageData} alt='m' display={!imageData && 'none'}
+            <Image rounded={'lg'} maxW={'10%'} maxH={'10%'} src={imageData} alt='m' display={!imageData && 'none'}
             />}
         <Box className="ml-8 self-start flex flex-col">
             <Tooltip label={manga.title} hasArrow arrowSize={10} placement="top" >
@@ -90,13 +90,13 @@ const ToolbarItems = ({ id }) => {
                         <List spacing={3}  >
                             <ListItem>
                                 <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={() => onClickDownload(volume.volume)}>
-                                    <Button  >Volume {volume.volume}</Button>
+                                    <Button> Volume {volume.volume}</Button>
                                     <IconButton icon={<DownloadIcon />} />
                                 </ButtonGroup>
                             </ListItem>
                             {volume.chapters.length > 0 && volume.chapters.map((chapter) => <ListItem key={chapter.chapter} className="flex gap-3 items-center">
                                 <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={() => onClickDownload(volume.volume, chapter.chapter)}>
-                                    <Button  >Chapter {chapter.chapter}</Button>
+                                    <Button> Chapter {chapter.chapter}</Button>
                                     <IconButton icon={<DownloadIcon />} />
                                 </ButtonGroup>
                             </ListItem>)}
