@@ -29,12 +29,14 @@ export const downloadMangaById = createAsyncThunk(
     }
 )
 
-export const downloadMangaByVolume = createAsyncThunk(
-    'manga/downloadMangaByVolume',
+export const downloadMangaByVolumeOrChapter = createAsyncThunk(
+    'manga/downloadMangaByVolumeOrChapter',
     async (data, { dispatch, getState }) => {
         try {
-            const blob = await MangaService.download('download', data.id + '/volume/' + data.volumeNumber)
-            downloadManga(blob)
+            let params = data.id + '/' + data.volumeNumber;
+            params = data.chapterNumber ? params + '/' + data.chapterNumber : params;
+            const blob = await MangaService.download('download', params);
+            downloadManga(blob);
         } catch (error) {
             console.error('An error occurred:', error);
         }
@@ -66,14 +68,14 @@ export const mangaDownloaderSlice = createSlice({
             state.loading = false;
             state.error = action.error.message;
         })
-        builder.addCase(downloadMangaByVolume.fulfilled, (state, action) => {
+        builder.addCase(downloadMangaByVolumeOrChapter.fulfilled, (state, action) => {
             state.volumesToDownload.shift()
             state.loading = false;
         })
-        builder.addCase(downloadMangaByVolume.pending, (state) => {
+        builder.addCase(downloadMangaByVolumeOrChapter.pending, (state) => {
             state.loading = true;
         })
-        builder.addCase(downloadMangaByVolume.rejected, (state, action) => {
+        builder.addCase(downloadMangaByVolumeOrChapter.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message;
         })
