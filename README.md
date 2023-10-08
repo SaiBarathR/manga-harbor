@@ -1,71 +1,173 @@
-# Getting Started with Create React App
+# Manga Harbor
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Manga Harbor is a web application that allows users to discover, search, and download manga. It provides a user-friendly interface to explore a vast collection of manga titles and download them for offline reading. This repository contains the client-side code for Manga Harbor, which interacts with the Manga Harbor Server to fetch manga data and handle downloads.
 
-## Available Scripts
+## Table of Contents
 
-In the project directory, you can run:
+- [Prerequisites](#prerequisites)
+- [Steps to Run the React App with Manga Harbor Spring Server](#steps-to-run-the-react-app-with-manga-harbor-spring-server)
+  - [Clone the Repositories](#1-clone-the-repositories)
+  - [Set Up the Manga Harbor Spring Server](#2-set-up-the-manga-harbor-spring-server)
+  - [Set Up the Manga Harbor React Client](#3-set-up-the-manga-harbor-react-client)
+  - [Configure API Endpoint (Optional)](#4-configure-api-endpoint-optional)
+  - [Run the React App](#5-run-the-react-app)
+- [Additional Notes](#additional-notes)
+- [Features](#features)
+- [How It Works](#how-it-works)
+  - [Components](#components)
+  - [Interaction Flow](#interaction-flow)
+  - [Offline Reading](#offline-reading)
+- [Responsiveness](#responsiveness)
+- [Manga Harbor Server Integration](#manga-harbor-server-integration)
+- [Manga Harbor Server Repository](#manga-harbor-server-repository)
+- [List of Topics](#list-of-topics)
 
-### `npm start`
+### Prerequisites
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Before you begin, ensure that you have the following software installed on your system:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Node.js: Download and install Node.js from [nodejs.org](https://nodejs.org/).
+- npm: npm comes bundled with Node.js, so there is no need for a separate installation.
+- Git: Download and install Git from [git-scm.com](https://git-scm.com/).
+- Java Development Kit (JDK): Download and install JDK from [oracle.com/java](https://www.oracle.com/java/technologies/javase-jdk15-downloads.html).
 
-### `npm test`
+### Steps to Run the React App with Manga Harbor Spring Server
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### 1. Clone the Repositories
 
-### `npm run build`
+First, clone the Manga Harbor client and server repositories from GitHub.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+# Clone the Manga Harbor client repository
+git clone https://github.com/SaiBarathR/manga-harbor.git
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# Clone the Manga Harbor server repository
+git clone https://github.com/SaiBarathR/manga-harbor-server.git
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### 2. Set Up the Manga Harbor Spring Server
 
-### `npm run eject`
+- Navigate to the `manga-harbor-server` directory:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+  ```bash
+  cd manga-harbor-server
+  ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Build and run the Spring server using Maven:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+  ```bash
+  # Build the server
+  mvn clean install
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+  # Run the server
+  mvn spring-boot:run
+  ```
 
-## Learn More
+The Manga Harbor Spring server should now be running on `http://localhost:9000/`.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+#### 3. Set Up the Manga Harbor React Client
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Navigate to the `manga-harbor` directory:
 
-### Code Splitting
+  ```bash
+  cd ../manga-harbor
+  ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- Install the dependencies:
 
-### Analyzing the Bundle Size
+  ```bash
+  npm install
+  ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+#### 4. Configure API Endpoint (Optional)
 
-### Making a Progressive Web App
+If the Spring server is running on a different port or host, update the API endpoint in the React app. Open the `src/config/app.json` file and modify the `baseUrl` accordingly:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```json
+{
+  "urls": {
+        "manga": "manga/",
+        "tags": "manga/tag",
+        "grpMangaStats": "statistics/manga",
+        "search": "manga/search/",
+        "cover": "manga/cover?url=",
+        "download": "manga/download/",
+        "volumes": "manga/volumeList/"
+    },
+  "baseUrl": {
+    "springBoot": "http://localhost:9000/",
+    "mangaDex": "https://api.mangadex.org/"
+  }
+}
+```
 
-### Advanced Configuration
+Replace `"http://localhost:9000/"` with the appropriate base URL of your Manga Harbor Spring server.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+#### 5. Run the React App
 
-### Deployment
+- Start the React development server:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+  ```bash
+  npm start
+  ```
 
-### `npm run build` fails to minify
+The React app should now be running on `http://localhost:3000/`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# manga-web-app
+You can access the Manga Harbor web application by visiting `http://localhost:3000/` in your web browser.
+
+### Additional Notes
+
+- Make sure the Manga Harbor Spring server is running while using the React app to ensure seamless communication between the client and server.
+- If you encounter any issues or errors during the setup process, refer to the respective documentation of the technologies used (React, Spring Boot) for troubleshooting assistance.
+
+Now you are all set to explore and use Manga Harbor! If you have any more questions or need further assistance, feel free to ask. Happy coding! 🚀
+
+## Features
+
+- **Search:** Easily search for manga titles by name, author, or genre.
+- **Detailed Information:** View detailed information about manga titles, including descriptions, ratings, and release status.
+- **Download:** Download manga volumes and chapters for offline reading.
+- **User-Friendly Interface:** Intuitive and responsive design for seamless user experience across devices.
+
+## How It Works
+
+The Manga Harbor client is built using React and Chakra UI. It communicates with the Manga Harbor Server, a Spring Boot application, to fetch manga data and handle download requests.
+
+### Components
+
+- **Home:** The main page that displays the header, manga details, and toolbar components.
+- **Header:** The top bar containing the Manga Harbor logo, search bar, and theme switcher button.
+- **Manga Details:** Displays detailed information about the selected manga, including title, description, status, rating, and download options.
+- **Toolbar:** Provides options to download manga volumes and chapters. It organizes chapters into volumes for easy navigation and selection.
+
+### Interaction Flow
+
+1. **Search:** Users can enter the manga title they are looking for in the search bar on the header.
+2. **View Details:** Upon selecting a manga title from the search results, detailed information about the manga is displayed in the Manga Details component.
+3. **Download Manga:** Users can choose to download entire volumes or specific chapters of the manga using the Toolbar component. The selected manga data is sent to the Manga Harbor Server for processing and download.
+4. **Offline Reading:** Once downloaded, users can access the downloaded manga volumes and chapters for offline reading.
+
+## Responsiveness
+
+Manga Harbor is designed to be responsive and works seamlessly on various devices, including desktops, tablets, and smartphones. The user interface adjusts dynamically to different screen sizes, ensuring a consistent experience across platforms.
+
+## Manga Harbor Server Integration
+
+The Manga Harbor client interacts with the Manga Harbor Server to fetch manga data and handle download requests. The server-side code provides the necessary API endpoints for the client to communicate with. The server is built using Spring Boot and serves as the backend for Manga Harbor.
+
+## Manga Harbor Server Repository
+
+The Manga Harbor Server repository can be found at [manga-harbor-server](https://github.com/SaiBarathR/manga-harbor-server). Please refer to the server repository for detailed information on server setup, API endpoints, and backend implementation.
+
+## List of Topics
+
+- **Search:** Discover manga titles by searching with keywords, author names, or genres.
+- **Manga Details:** Access detailed information about manga, including title, description, status, and rating.
+- **Download Options:** Download entire manga volumes or specific chapters for offline reading.
+- **Responsiveness:** Seamless user experience across devices with responsive design.
+- **Integration:** Client-server interaction and integration with the Manga Harbor Server.
+- **Offline Reading:** Downloaded manga can be accessed and read offline.
+
+---
+
+Feel free to customize and enhance the README file further to provide additional information about your project! If you have any questions or need further assistance, please don't hesitate to ask. Good luck with your Manga Harbor project! 🌟
