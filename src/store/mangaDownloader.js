@@ -29,8 +29,8 @@ export const downloadMangaById = createAsyncThunk(
     }
 )
 
-export const dowwnloadMangaByVolume = createAsyncThunk(
-    'manga/dowwnloadMangaByVolume',
+export const downloadMangaByVolume = createAsyncThunk(
+    'manga/downloadMangaByVolume',
     async (data, { dispatch, getState }) => {
         try {
             const blob = await MangaService.download('download', data.id + '/volume/' + data.volumeNumber)
@@ -66,14 +66,14 @@ export const mangaDownloaderSlice = createSlice({
             state.loading = false;
             state.error = action.error.message;
         })
-        builder.addCase(dowwnloadMangaByVolume.fulfilled, (state, action) => {
+        builder.addCase(downloadMangaByVolume.fulfilled, (state, action) => {
             state.volumesToDownload.shift()
             state.loading = false;
         })
-        builder.addCase(dowwnloadMangaByVolume.pending, (state) => {
+        builder.addCase(downloadMangaByVolume.pending, (state) => {
             state.loading = true;
         })
-        builder.addCase(dowwnloadMangaByVolume.rejected, (state, action) => {
+        builder.addCase(downloadMangaByVolume.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message;
         })

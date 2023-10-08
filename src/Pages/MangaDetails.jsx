@@ -6,7 +6,7 @@ import { TagRenderer } from './commonComponents/SearchBar';
 import useMangaImage from '../hooks/useMangaImage';
 import { mangaStatusColors } from '../config/constants';
 import { BellIcon, DownloadIcon, StarIcon } from '@chakra-ui/icons';
-import { addVolumeToDownloadQueue, dowwnloadMangaByVolume } from '../store/mangaDownloader';
+import { addVolumeToDownloadQueue, downloadMangaByVolume } from '../store/mangaDownloader';
 
 export default function MangaDetails() {
     const mangaDetails = useSelector((state) => state.manga.mangaDetails);
@@ -62,7 +62,7 @@ const ToolbarItems = ({ id }) => {
 
     const onClickDownload = async (volumeNumber) => {
         dispatch(addVolumeToDownloadQueue({ id: id, volumeNumber: volumeNumber === 'none' ? 0 : volumeNumber }))
-        dispatch(dowwnloadMangaByVolume({ id: id, volumeNumber: volumeNumber === 'none' ? 0 : volumeNumber }))
+        dispatch(downloadMangaByVolume({ id: id, volumeNumber: volumeNumber === 'none' ? 0 : volumeNumber }))
 
     };
 
@@ -72,7 +72,7 @@ const ToolbarItems = ({ id }) => {
                 <AccordionItem p={0} border={'1px solid rgba(255, 255, 255, 0.16)'} className="m-1 my-2 rounded-lg shadow-lg hover:rounded-lg">
                     <AccordionButton className="rounded-lg">
                         <Box as="span" flex='1' textAlign='left'>
-                            {volume.volume === 'none' ? 'Un-listested Chapters' : "Volume " + volume.volume}
+                            {volume.volume === 'none' ? 'Un-listed Chapters' : "Volume " + volume.volume}
                         </Box>
                         <Tooltip label={'Download Volume ' + volume.volume}>
                             <IconButton size={'sm'} mx={2} onClick={() => onClickDownload(volume.volume)}>
