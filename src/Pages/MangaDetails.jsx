@@ -1,4 +1,4 @@
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Grid, GridItem, Heading, IconButton, Image, List, ListItem, Skeleton, Text, Tooltip } from '@chakra-ui/react'
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, ButtonGroup, Grid, GridItem, Heading, IconButton, Image, List, ListItem, Skeleton, Text, Tooltip } from '@chakra-ui/react'
 import React, { useEffect, } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchMangaById, fetchVolumeList } from '../store/mangaSlice';
@@ -6,7 +6,7 @@ import { TagRenderer } from './commonComponents/SearchBar';
 import useMangaImage from '../hooks/useMangaImage';
 import { mangaStatusColors } from '../config/constants';
 import { BellIcon, DownloadIcon, StarIcon } from '@chakra-ui/icons';
-import { addVolumeToDownloadQueue, downloadMangaByVolume } from '../store/mangaDownloader';
+import { addVolumeToDownloadQueue, downloadMangaByVolumeOrChapter } from '../store/mangaDownloader';
 
 export default function MangaDetails() {
     const mangaDetails = useSelector((state) => state.manga.mangaDetails);
@@ -40,7 +40,7 @@ const MangaDetailsHeader = ({ manga }) => {
         {!imageData ? <Box width={'252px'}> <Skeleton height={'330px'} width={'202px'} /> </Box> :
             <Image maxW={'10%'} maxH={'10%'} src={imageData} alt='m' display={!imageData && 'none'}
             />}
-        <Box className="ml-8 self-start">
+        <Box className="ml-8 self-start flex flex-col">
             <Tooltip label={manga.title} hasArrow arrowSize={10} placement="top" >
                 <Heading >{manga.title}</Heading>
             </Tooltip>
@@ -51,6 +51,10 @@ const MangaDetailsHeader = ({ manga }) => {
                 {manga.status && <TagRenderer sm={'lg'} colorScheme={mangaStatusColors[manga.status]}>{manga.year || 'unknown'} - {manga.status}</TagRenderer>}
                 {manga.rating.value && <TagRenderer sm={'lg'} colorScheme={manga.rating.color}><StarIcon boxSize={3} />{manga.rating.value.toFixed(2)}</TagRenderer>}
                 {manga.follows && <TagRenderer sm={'lg'} ><BellIcon boxSize={3} />{manga.follows}</TagRenderer>}
+                <ButtonGroup isAttached variant='outline'>
+                    <Button>Download</Button>
+                    <IconButton icon={<DownloadIcon />} />
+                </ButtonGroup>
             </Box>
         </Box>
     </Box>
@@ -60,10 +64,11 @@ const ToolbarItems = ({ id }) => {
     const volumes = useSelector((state) => state.manga.volumes);
     const dispatch = useDispatch()
 
-    const onClickDownload = async (volumeNumber) => {
-        dispatch(addVolumeToDownloadQueue({ id: id, volumeNumber: volumeNumber === 'none' ? 0 : volumeNumber }))
-        dispatch(downloadMangaByVolume({ id: id, volumeNumber: volumeNumber === 'none' ? 0 : volumeNumber }))
-
+    const onClickDownload = async (volumeNumber, chapterNumber = null) => {
+        const params = { id: id, volumeNumber: volumeNumber === 'none' ? 0 : volumeNumber }
+        if (chapterNumber) Object.assign(params, { chapterNumber: chapterNumber })
+        dispatch(addVolumeToDownloadQueue(params))
+        dispatch(downloadMangaByVolumeOrChapter(params))
     };
 
     return <Accordion className=" w-full" allowMultiple>
@@ -74,17 +79,32 @@ const ToolbarItems = ({ id }) => {
                         <Box as="span" flex='1' textAlign='left'>
                             {volume.volume === 'none' ? 'Un-listed Chapters' : "Volume " + volume.volume}
                         </Box>
-                        <Tooltip label={'Download Volume ' + volume.volume}>
+                        {/* <Tooltip label={'Download Volume ' + volume.volume}>
                             <IconButton size={'sm'} mx={2} onClick={() => onClickDownload(volume.volume)}>
                                 <DownloadIcon />
                             </IconButton>
-                        </Tooltip>
+                        </Tooltip> */}
                         <AccordionIcon />
                     </AccordionButton>
                     <AccordionPanel pb={4} pt={1}>
                         <List spacing={3}  >
+                            <ListItem>
+                                <ButtonGroup isAttached variant='outline' onClick={() => onClickDownload(volume.volume)}>
+                                    <Button  >Volume {volume.volume}</Button>
+                                    <IconButton icon={<DownloadIcon />} />
+                                </ButtonGroup>
+                            </ListItem>
                             {volume.chapters.length > 0 && volume.chapters.map((chapter) => <ListItem key={chapter.chapter} className="flex gap-3 items-center">
-                                Chapter {chapter.chapter}
+                                <ButtonGroup isAttached variant='outline' onClick={() => onClickDownload(volume.volume, chapter.chapter)}>
+                                    <Button  >Chapter {chapter.chapter}</Button>
+                                    <IconButton icon={<DownloadIcon />} />
+                                </ButtonGroup>
+                                {/* <Text>Chapter {chapter.chapter}</Text>
+                                <Tooltip label={`Download Chapter ${chapter.chapter}`}>
+                                    <IconButton size={'sm'} mx={2} onClick={() => onClickDownload(volume.volume)}>
+                                        <DownloadIcon />
+                                    </IconButton>
+                                </Tooltip> */}
                             </ListItem>)}
                         </List>
                     </AccordionPanel>
