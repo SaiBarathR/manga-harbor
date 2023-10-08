@@ -25,15 +25,20 @@ export default function MangaDetails() {
     return mangaDetails.id && (loading ? <Skeleton className='h-[82vh] w-full'>
     </Skeleton> : <Box className='w-[96%]'>
         <Box className='flex flex-col items-center'>
-            <MangaDetailsHeader manga={mangaDetails} />
+            <MangaDetailsHeader manga={mangaDetails} dispatch={dispatch} />
             <ToolbarItems id={mangaDetails.id} />
         </Box>
     </Box>)
 }
 
-const MangaDetailsHeader = ({ manga }) => {
+const MangaDetailsHeader = ({ manga, dispatch }) => {
 
     const imageData = useMangaImage(manga.image)
+
+    const onClickDownload = async () => {
+        // dispatch(addVolumeToDownloadQueue(params))
+        dispatch(downloadMangaByVolumeOrChapter(manga.id))
+    };
 
     return <Box _dark={{ bg: 'blackAlpha.600' }} bg={'#adcdf7'}
         className="flex w-full p-1 items-center  my-2 mx-8 lg:mx-10 md:p-2 lg:p-4 rounded-md shadow-xl">
@@ -51,7 +56,7 @@ const MangaDetailsHeader = ({ manga }) => {
                 {manga.status && <TagRenderer sm={'lg'} colorScheme={mangaStatusColors[manga.status]}>{manga.year || 'unknown'} - {manga.status}</TagRenderer>}
                 {manga.rating.value && <TagRenderer sm={'lg'} colorScheme={manga.rating.color}><StarIcon boxSize={3} />{manga.rating.value.toFixed(2)}</TagRenderer>}
                 {manga.follows && <TagRenderer sm={'lg'} ><BellIcon boxSize={3} />{manga.follows}</TagRenderer>}
-                <ButtonGroup isAttached variant='outline'>
+                <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={onClickDownload}>
                     <Button>Download</Button>
                     <IconButton icon={<DownloadIcon />} />
                 </ButtonGroup>
@@ -64,9 +69,9 @@ const ToolbarItems = ({ id }) => {
     const volumes = useSelector((state) => state.manga.volumes);
     const dispatch = useDispatch()
 
-    const onClickDownload = async (volumeNumber, chapterNumber = null) => {
-        const params = { id: id, volumeNumber: volumeNumber === 'none' ? 0 : volumeNumber }
-        if (chapterNumber) Object.assign(params, { chapterNumber: chapterNumber })
+    const onClickDownload = async (vol, chapter = null) => {
+        let volume = (vol === 'none') ? 0 : vol;
+        const params = !chapter ? id + '/' + volume : id + '/' + volume + '/' + chapter;
         dispatch(addVolumeToDownloadQueue(params))
         dispatch(downloadMangaByVolumeOrChapter(params))
     };
@@ -79,32 +84,21 @@ const ToolbarItems = ({ id }) => {
                         <Box as="span" flex='1' textAlign='left'>
                             {volume.volume === 'none' ? 'Un-listed Chapters' : "Volume " + volume.volume}
                         </Box>
-                        {/* <Tooltip label={'Download Volume ' + volume.volume}>
-                            <IconButton size={'sm'} mx={2} onClick={() => onClickDownload(volume.volume)}>
-                                <DownloadIcon />
-                            </IconButton>
-                        </Tooltip> */}
                         <AccordionIcon />
                     </AccordionButton>
                     <AccordionPanel pb={4} pt={1}>
                         <List spacing={3}  >
                             <ListItem>
-                                <ButtonGroup isAttached variant='outline' onClick={() => onClickDownload(volume.volume)}>
+                                <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={() => onClickDownload(volume.volume)}>
                                     <Button  >Volume {volume.volume}</Button>
                                     <IconButton icon={<DownloadIcon />} />
                                 </ButtonGroup>
                             </ListItem>
                             {volume.chapters.length > 0 && volume.chapters.map((chapter) => <ListItem key={chapter.chapter} className="flex gap-3 items-center">
-                                <ButtonGroup isAttached variant='outline' onClick={() => onClickDownload(volume.volume, chapter.chapter)}>
+                                <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={() => onClickDownload(volume.volume, chapter.chapter)}>
                                     <Button  >Chapter {chapter.chapter}</Button>
                                     <IconButton icon={<DownloadIcon />} />
                                 </ButtonGroup>
-                                {/* <Text>Chapter {chapter.chapter}</Text>
-                                <Tooltip label={`Download Chapter ${chapter.chapter}`}>
-                                    <IconButton size={'sm'} mx={2} onClick={() => onClickDownload(volume.volume)}>
-                                        <DownloadIcon />
-                                    </IconButton>
-                                </Tooltip> */}
                             </ListItem>)}
                         </List>
                     </AccordionPanel>

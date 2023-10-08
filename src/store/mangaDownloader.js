@@ -31,10 +31,8 @@ export const downloadMangaById = createAsyncThunk(
 
 export const downloadMangaByVolumeOrChapter = createAsyncThunk(
     'manga/downloadMangaByVolumeOrChapter',
-    async (data, { dispatch, getState }) => {
-        try {
-            let params = data.id + '/' + data.volumeNumber;
-            params = data.chapterNumber ? params + '/' + data.chapterNumber : params;
+    async (params, { dispatch, getState }) => {
+        try {    
             const blob = await MangaService.download('download', params);
             downloadManga(blob);
         } catch (error) {
