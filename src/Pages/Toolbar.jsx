@@ -6,7 +6,7 @@ const Toolbar = () => {
     const dark = useMemo(() => colorMode === 'dark', [colorMode])
     const [open, setOpen] = useState(false)
 
-    return <Box className="fixed bottom-5 min-w-[200px] max-w-[20%] p-2 rounded-lg" bg={dark ? '#2C2C2C' : '#D8E8FE'}>
+    return <Box className="fixed bottom-5 min-w-[200px] max-w-[20%] p-2 rounded-lg" bg={'#D8E8FE'} _dark={{ bg: '#2C2C2C' }}>
         <Flex alignItems={"center"} gap={2} p={open ? 1 : 0}>
             <Button bg={dark ? '#2C2C2C' : '#D8E8FE'} size={'sm'} fontSize={'md'} fontWeight={500} boxShadow={open && 'lg'} variant={open ? 'solid' : 'ghost'} className='w-full min-h-0' onClick={() => setOpen((prev) => !prev)} >
                 Filters
