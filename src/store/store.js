@@ -1,14 +1,15 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import searchSlice from './searchSlice';
 import mangaSlice from './mangaSlice';
+import mangaDownloaderSlice from './mangaDownloaderSlice';
 
 const combinedMangaAppReducers = combineReducers({
     search: searchSlice,
     manga: mangaSlice,
+    mangaDownloader: mangaDownloaderSlice,
 });
 
 export const rootReducer = (state, action) => {
-    console.log('action', action)
     if (action.type === "Clear") {
         state = undefined;
     }
@@ -23,7 +24,7 @@ const loadState = () => {
         }
         return JSON.parse(currentReduxStates);
     } catch (e) {
-        console.log("error loadin redux state from local storage", e)
+        console.log("error loading redux state from local storage", e)
     }
 };
 
