@@ -16,19 +16,17 @@ const MangaService = (function () {
         }
     }
 
-    service.download = async function (key, params = '') {
-        const resp = await API.get(urls[key] + params, {
+    service.download = async function (key, data) {
+        const resp = await API.post(urls[key], data, {
             responseType: 'blob',
-            headers: {
-                'Content-Type': 'application/zip',
-                'Accept': 'application/zip'
-            },
             onDownloadProgress: (progressEvent) => {
+                // console.log(" ~ file: mangaService.js:23 ~ progressEvent:", progressEvent)
+                // console.log(" ~ file: mangaService.js:27 ~ progressEvent:", progressEvent)
                 // let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total); // you can use this to show user percentage of file downloaded
             }
         });
         if (resp.status === 200) {
-            const fileName = resp.headers['content-disposition'].split('filename=')[1];
+            const fileName = resp.headers['content-disposition'].split('filename=')[1].split('"')[1].split('split_here')[1];
             return { fileName: fileName, file: await resp.data }
         }
     }

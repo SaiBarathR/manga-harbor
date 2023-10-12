@@ -21,7 +21,10 @@ export const downloadMangaById = createAsyncThunk(
     'manga/downloadMangaById',
     async (id) => {
         try {
-            const { file, fileName } = await MangaService.download('download', id)
+            const resp = await MangaService.get('download', id);
+            console.log("Manga download data", resp)
+            const { file, fileName } = await MangaService.download('download', resp);
+            console.log('Prepared for downloading file: ', fileName)
             downloadManga(file, fileName)
         } catch (error) {
             console.error('An error occurred:', error);
@@ -33,8 +36,11 @@ export const downloadMangaByVolumeOrChapter = createAsyncThunk(
     'manga/downloadMangaByVolumeOrChapter',
     async (params, { dispatch, getState }) => {
         try {
-            const { file, fileName } = await MangaService.download('download', params);
-            downloadManga(file, fileName);
+            const resp = await MangaService.get('download', params);
+            console.log("Manga download data", resp)
+            const { file, fileName } = await MangaService.download('download', resp);
+            console.log('Prepared for downloading file: ', fileName)
+            downloadManga(file, fileName)
         } catch (error) {
             console.error('An error occurred:', error);
         }
