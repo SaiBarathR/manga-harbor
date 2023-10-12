@@ -1,5 +1,6 @@
 import app from '../config/app.json'
 import axios from 'axios';
+import { updateItemsToDownload } from '../store/mangaDownloaderSlice';
 
 const MangaService = (function () {
 
@@ -16,13 +17,12 @@ const MangaService = (function () {
         }
     }
 
-    service.download = async function (key, data) {
-        const resp = await API.post(urls[key], data, {
+    service.download = async function (key, manga, index, dispatch) {
+        const resp = await API.post(urls[key], manga, {
             responseType: 'blob',
             onDownloadProgress: (progressEvent) => {
-                // console.log(" ~ file: mangaService.js:23 ~ progressEvent:", progressEvent)
-                // console.log(" ~ file: mangaService.js:27 ~ progressEvent:", progressEvent)
-                // let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total); // you can use this to show user percentage of file downloaded
+                const { rate, loaded } = progressEvent
+                dispatch(updateItemsToDownload({ ...manga, index, rate, loaded }))
             }
         });
         if (resp.status === 200) {
