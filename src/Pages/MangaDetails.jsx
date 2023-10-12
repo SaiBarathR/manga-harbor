@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchMangaById, fetchVolumeList } from '../store/mangaSlice';
 import { TagRenderer } from './commonComponents/SearchBar';
 import useMangaImage from '../hooks/useMangaImage';
-import { mangaStatusColors } from '../config/constants';
+import { MangaStatusColors } from '../config/constants';
 import { BellIcon, DownloadIcon, StarIcon } from '@chakra-ui/icons';
-import { addVolumeToDownloadQueue, downloadMangaByVolumeOrChapter } from '../store/mangaDownloader';
+import { downloadMangaByVolumeOrChapter } from '../store/mangaDownloaderSlice';
 
 export default function MangaDetails() {
     const mangaDetails = useSelector((state) => state.manga.mangaDetails);
@@ -53,7 +53,7 @@ const MangaDetailsHeader = ({ manga, dispatch }) => {
                 {manga.attributes && (manga.attributes.description.en || '')}
             </Text>
             <Box className="flex flex-col md:flex-row gap-2 md:gap-2 my-2">
-                {manga.status && <TagRenderer sm={'lg'} colorScheme={mangaStatusColors[manga.status]}>{manga.year || 'unknown'} - {manga.status}</TagRenderer>}
+                {manga.status && <TagRenderer sm={'lg'} colorScheme={MangaStatusColors[manga.status]}>{manga.year || 'unknown'} - {manga.status}</TagRenderer>}
                 {manga.rating.value && <TagRenderer sm={'lg'} colorScheme={manga.rating.color}><StarIcon boxSize={3} />{manga.rating.value.toFixed(2)}</TagRenderer>}
                 {manga.follows && <TagRenderer sm={'lg'} ><BellIcon boxSize={3} />{manga.follows}</TagRenderer>}
                 <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={onClickDownload}>
@@ -72,7 +72,6 @@ const ToolbarItems = ({ id }) => {
     const onClickDownload = async (vol, chapter = null) => {
         let volume = (vol === 'none') ? 0 : vol;
         const params = !chapter ? id + '/' + volume : id + '/' + volume + '/' + chapter;
-        dispatch(addVolumeToDownloadQueue(params))
         dispatch(downloadMangaByVolumeOrChapter(params))
     };
 

@@ -4,7 +4,7 @@ import { AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList } f
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMangaByName, setLoading, setSearchValue } from "../../store/searchSlice";
 import { useEffect, useMemo } from "react";
-import { mangaStatusColors } from "../../config/constants";
+import { MangaStatusColors } from "../../config/constants";
 import { setManga } from "../../store/mangaSlice";
 import useMangaImage from "../../hooks/useMangaImage";
 
@@ -79,7 +79,7 @@ export function Items({ manga, dark }) {
                 <Text noOfLines={2}>{manga.title}</Text>
             </Tooltip>
             <Box className="flex flex-col md:flex-row gap-2 md:gap-2">
-                {manga.status && <TagRenderer colorScheme={mangaStatusColors[manga.status]}>{manga.year || 'unknown'} - {manga.status}</TagRenderer>}
+                {manga.status && <TagRenderer colorScheme={MangaStatusColors[manga.status]}>{manga.year || 'unknown'} - {manga.status}</TagRenderer>}
                 {manga.rating.value && <TagRenderer colorScheme={manga.rating.color}><StarIcon boxSize={3} />{manga.rating.value.toFixed(2)}</TagRenderer>}
                 {manga.follows && <TagRenderer ><BellIcon boxSize={3} />{manga.follows}</TagRenderer>}
             </Box>
