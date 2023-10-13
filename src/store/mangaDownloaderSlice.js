@@ -1,11 +1,8 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit'
 import MangaService from '../service/mangaService'
 
 const initialState = {
-    downloading: {
-        volumes: [],
-        chapters: []
-    },
+    preparingZips: [],
     itemsToDownload: [],
 
 }
@@ -27,6 +24,26 @@ export const mangaDownloaderSlice = createSlice({
     name: 'mangaDownloaderSlice',
     initialState,
     reducers: {
+        addNewItemToDownloadQueue: (state, action) => {
+            if (state.preparingZips.length > 0) {
+                const index = state.preparingZips.findIndex((item) => item.name === action.payload.name);
+                if (action.payload.chapter) {
+                    state.preparingZips[index].chapters.push(action.payload.chapter)
+                }
+                else {
+                    state.preparingZips[index].chapters.push(action.payload.volume.toString())
+                }
+            } else {
+                const newItem = { name: action.payload.name, volumes: [], chapters: [] }
+                if (action.payload.chapter) {
+                    newItem.chapters.push(action.payload.chapter)
+                }
+                else {
+                    newItem.volumes.push(action.payload.volume.toString())
+                }
+                state.preparingZips.push(newItem)
+            }
+        },
         addVolumeToDownloadQueue: (state, action) => {
             if (action.payload.length) {
                 state.volumesToDownload = [...state.volumesToDownload, ...action.payload]
@@ -48,8 +65,26 @@ export const mangaDownloaderSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(downloadMangaByVolumeOrChapter.fulfilled, (state, action) => {
-            const itemToDownload = { ...action.payload, loaded: 0, rate: 0 }
-            state.itemsToDownload.push(itemToDownload);
+            const itemToDownloadInQueue = { ...action.payload, loaded: 0, rate: 0 }
+            const name = itemToDownloadInQueue.name.split('split_here')[1];
+            const currentPreparingZips = current(state.preparingZips);
+            const index = currentPreparingZips.findIndex((item) => item.name === name);
+            if (index > -1) {
+                let itemFromZipQueue = structuredClone(currentPreparingZips[index]);
+                if (itemToDownloadInQueue.volumes.length > 0) {
+                    itemFromZipQueue.volumes = itemFromZipQueue.volumes.filter((item) => item !== itemToDownloadInQueue.volumes[0])
+                }
+                else {
+                    itemFromZipQueue.chapters = itemFromZipQueue.chapters.filter((item) => item !== itemToDownloadInQueue.chapters)
+                }
+                if (itemFromZipQueue.volumes.length === 0 && itemFromZipQueue.chapters.length === 0) {
+                    state.preparingZips = currentPreparingZips.filter((item) => item.name !== name)
+                }
+                else {
+                    state.preparingZips[index] = itemFromZipQueue;
+                }
+            }
+            state.itemsToDownload.push(itemToDownloadInQueue);
             state.loading = false;
         })
         builder.addCase(downloadMangaByVolumeOrChapter.pending, (state) => {
@@ -62,6 +97,6 @@ export const mangaDownloaderSlice = createSlice({
     }
 })
 
-export const { addVolumeToDownloadQueue, updateItemsToDownload, removeCompletedDownloads } = mangaDownloaderSlice.actions
+export const { addVolumeToDownloadQueue, updateItemsToDownload, removeCompletedDownloads, addNewItemToDownloadQueue } = mangaDownloaderSlice.actions
 
 export default mangaDownloaderSlice.reducer
