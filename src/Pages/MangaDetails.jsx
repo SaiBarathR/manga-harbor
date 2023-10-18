@@ -1,4 +1,4 @@
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, ButtonGroup, CircularProgress, Grid, GridItem, Heading, IconButton, Image, List, ListItem, Skeleton, Text, Tooltip } from '@chakra-ui/react'
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, ButtonGroup, Grid, GridItem, Heading, IconButton, List, ListItem, Skeleton, Text, Tooltip } from '@chakra-ui/react'
 import React, { useEffect, } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchMangaById, fetchVolumeList } from '../store/mangaSlice';
@@ -26,7 +26,7 @@ export default function MangaDetails() {
     </Skeleton> : <Box className='w-[96%]'>
         <Box className='flex flex-col items-center'>
             <MangaDetailsHeader manga={mangaDetails} dispatch={dispatch} />
-            <ToolbarItems id={mangaDetails.id} title={mangaDetails.title} />
+            <VolumeList id={mangaDetails.id} title={mangaDetails.title} />
         </Box>
     </Box>)
 }
@@ -34,16 +34,24 @@ export default function MangaDetails() {
 const MangaDetailsHeader = ({ manga, dispatch }) => {
 
     const imageData = useMangaImage(manga.image)
+    const volumes = useSelector((state) => state.manga.volumes);
 
     const onClickDownload = async () => {
-        // dispatch(addVolumeToDownloadQueue(params))
+        const params = {
+            name: manga.title,
+            volume: volumes.map(item => item.volume),
+            chapter: null
+        }
+        console.log("🚀 ~ file: MangaDetails.jsx:45 ~ onClickDownload ~ params:", params)
+        dispatch(addNewItemToDownloadQueue(params))
         dispatch(downloadMangaByVolumeOrChapter(manga.id))
     };
 
     return <Box _dark={{ bg: 'blackAlpha.600' }} bg={'#adcdf7'}
         className="flex w-full p-1 items-center  my-2 mx-8 lg:mx-10 md:p-2 lg:p-4 rounded-md shadow-xl">
         {!imageData ? <Box width={'252px'}> <Skeleton height={'330px'} width={'202px'} /> </Box> :
-            <Image rounded={'lg'} maxW={'10%'} maxH={'10%'} src={imageData} alt='m' display={!imageData && 'none'} />
+            // <Image rounded={'lg'} maxW={'10%'} maxH={'10%'} src={imageData} alt='m' display={!imageData && 'none'} />
+            <></>
         }
         <Box className="ml-8 self-start flex flex-col">
             <Tooltip label={manga.title} hasArrow arrowSize={10} placement="top" >
@@ -65,7 +73,7 @@ const MangaDetailsHeader = ({ manga, dispatch }) => {
     </Box>
 }
 
-const ToolbarItems = ({ id, title }) => {
+const VolumeList = ({ id, title }) => {
     const volumes = useSelector((state) => state.manga.volumes);
     const dispatch = useDispatch()
 
@@ -90,7 +98,7 @@ const ToolbarItems = ({ id, title }) => {
                         <List spacing={3}  >
                             <ListItem>
                                 <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={() => onClickDownload(volume.volume)}>
-                                    <Button> Preparing Volume {volume.volume}</Button>
+                                    <Button>{volume.volume}</Button>
                                     <IconButton aria-label={'download-icon-volume'}  >
                                         <DownloadIcon />
                                     </IconButton>
@@ -99,7 +107,7 @@ const ToolbarItems = ({ id, title }) => {
                             {volume.chapters.length > 0 && volume.chapters.map((chapter) => <ListItem key={chapter.chapter} className="flex gap-3 items-center">
                                 <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={() => onClickDownload(volume.volume, chapter.chapter)}>
                                     <Button> Chapter {chapter.chapter}</Button>
-                                    <IconButton icon={<DownloadIcon />}  aria-label={'download-icon-chapter'}/>
+                                    <IconButton icon={<DownloadIcon />} aria-label={'download-icon-chapter'} />
                                 </ButtonGroup>
                             </ListItem>)}
                         </List>
