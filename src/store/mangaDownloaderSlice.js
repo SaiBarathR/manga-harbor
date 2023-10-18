@@ -25,21 +25,41 @@ export const mangaDownloaderSlice = createSlice({
     initialState,
     reducers: {
         addNewItemToDownloadQueue: (state, action) => {
-            if (state.preparingZips.length > 0) {
-                const index = state.preparingZips.findIndex((item) => item.name === action.payload.name);
+            const index = state.preparingZips.length > 0 ? state.preparingZips.findIndex((item) => item.name === action.payload.name) : -1
+            if (index > -1) {
                 if (action.payload.chapter) {
                     state.preparingZips[index].chapters.push(action.payload.chapter)
+                    state.preparingZips[index].method = 'byChapter';
                 }
                 else {
-                    state.preparingZips[index].chapters.push(action.payload.volume.toString())
+                    const newVolumeForQueue = action.payload.volume;
+                    if (typeof newVolumeForQueue === 'object') {
+                        state.preparingZips[index].volumes = [...state.preparingZips[index].volumes, ...newVolumeForQueue];
+                        state.preparingZips[index].method = 'byManga';
+
+                    } else {
+                        if (newVolumeForQueue) {
+                            state.preparingZips[index].volumes.push(newVolumeForQueue.toString())
+                        }
+                        state.preparingZips[index].method = 'byVolume';
+                    }
                 }
             } else {
                 const newItem = { name: action.payload.name, volumes: [], chapters: [] }
                 if (action.payload.chapter) {
                     newItem.chapters.push(action.payload.chapter)
+                    newItem.method = 'byChapter';
                 }
                 else {
-                    newItem.volumes.push(action.payload.volume.toString())
+                    const newVolumeForQueue = action.payload.volume;
+                    if (typeof newVolumeForQueue === 'object') {
+                        newItem.volumes = newVolumeForQueue;
+                        newItem.method = 'byManga';
+
+                    } else {
+                        newItem.volumes.push(newVolumeForQueue.toString())
+                        newItem.method = 'byVolume';
+                    }
                 }
                 state.preparingZips.push(newItem)
             }
@@ -66,19 +86,19 @@ export const mangaDownloaderSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(downloadMangaByVolumeOrChapter.fulfilled, (state, action) => {
             const itemToDownloadInQueue = { ...action.payload, loaded: 0, rate: 0 }
-            const name = itemToDownloadInQueue.name.split('split_here')[1];
+            const nameFromResp = itemToDownloadInQueue.name.split('split_here')[1];
             const currentPreparingZips = current(state.preparingZips);
-            const index = currentPreparingZips.findIndex((item) => item.name === name);
+            const index = currentPreparingZips.findIndex((item) => item.name === nameFromResp);
             if (index > -1) {
                 let itemFromZipQueue = structuredClone(currentPreparingZips[index]);
-                if (itemToDownloadInQueue.volumes.length > 0) {
-                    itemFromZipQueue.volumes = itemFromZipQueue.volumes.filter((item) => item !== itemToDownloadInQueue.volumes[0])
+                if (itemToDownloadInQueue.method === 'byVolume') {
+                    itemFromZipQueue.volumes = itemFromZipQueue.volumes.filter((item) => !itemToDownloadInQueue.volumes.includes(item))
                 }
                 else {
                     itemFromZipQueue.chapters = itemFromZipQueue.chapters.filter((item) => item !== itemToDownloadInQueue.chapters)
                 }
                 if (itemFromZipQueue.volumes.length === 0 && itemFromZipQueue.chapters.length === 0) {
-                    state.preparingZips = currentPreparingZips.filter((item) => item.name !== name)
+                    state.preparingZips = currentPreparingZips.filter((item) => item.name !== nameFromResp)
                 }
                 else {
                     state.preparingZips[index] = itemFromZipQueue;

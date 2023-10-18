@@ -43,8 +43,13 @@ export const mangaSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(fetchMangaById.fulfilled, (state, action) => {
-            state.mangaDetails = { ...state.mangaDetails, ...action.payload.mangaData.data }
-            state.loading = false;
+            try {
+                state.mangaDetails = { ...state.mangaDetails, ...action.payload.mangaData.data }
+                state.loading = false;
+            }
+            catch (e) {
+                console.log('Unable to fetch manga data', e)
+            }
         })
         builder.addCase(fetchMangaById.pending, (state) => {
             state.loading = true;
