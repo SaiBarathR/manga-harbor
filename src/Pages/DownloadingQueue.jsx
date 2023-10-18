@@ -7,7 +7,6 @@ import { DownloadIcon } from "@chakra-ui/icons";
 
 export const DownloadingQueue = ({ dispatch, downloadingQueue }) => {
 
-
     return <AccordionItem p={0} border={'none'} className="m-1 rounded-lg shadow-lg hover:rounded-lg">
         <AccordionButton className="rounded-lg ">
             <Box as="span" flex='1' textAlign='left'>
@@ -26,7 +25,8 @@ export const DownloadingQueue = ({ dispatch, downloadingQueue }) => {
 
 const DownloadingItems = ({ downloadingItem, index, dispatch }) => {
 
-    const name = useMemo(() => downloadingItem.name.split('split_here')[1] + (downloadingItem.method === 'byChapter' ? (' Chapter: ' + downloadingItem.chapters) : downloadingItem.volumes.length > 1 ? '' : ' Volume: ' + downloadingItem.volumes[0]), [downloadingItem.chapters, downloadingItem.method, downloadingItem.name]);
+    downloadingItem.folderSize = downloadingItem.folderSize || 0;
+    const name = useMemo(() => String(downloadingItem.name.split('split_here')[1] + (downloadingItem.method === 'byChapter' ? (' Chapter: ' + downloadingItem.chapters) : downloadingItem.volumes.length > 1 ? '' : ' Volume: ' + downloadingItem.volumes[0])), [downloadingItem.chapters, downloadingItem.method, downloadingItem.name]);
     const percentCompleted = Math.round((downloadingItem.loaded * 100) / downloadingItem.folderSize);
 
     const downloadManga = async (downloadingItem, dispatch, index) => {
@@ -53,7 +53,7 @@ const DownloadingItems = ({ downloadingItem, index, dispatch }) => {
                     <Text>{formatBytes(downloadingItem.rate || 0) + '/s'}</Text>
                 </Box>
             </Box>
-            {downloadingItem.loaded === 0 && <IconButton background={'none'} size={'sm'} onClick={() => downloadManga(downloadingItem, dispatch, index)}>
+            {downloadingItem.loaded === 0 && <IconButton aria-label={'download-button-queue'} background={'none'} size={'sm'} onClick={() => downloadManga(downloadingItem, dispatch, index)} >
                 <DownloadIcon fontSize={20} />
             </IconButton>}
         </Box>

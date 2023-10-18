@@ -58,7 +58,7 @@ const MangaDetailsHeader = ({ manga, dispatch }) => {
                 {manga.follows && <TagRenderer sm={'lg'} ><BellIcon boxSize={3} />{manga.follows}</TagRenderer>}
                 <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={onClickDownload}>
                     <Button>Download</Button>
-                    <IconButton icon={<DownloadIcon />} />
+                    <IconButton aria-label={'download-icon-manga'} icon={<DownloadIcon />} />
                 </ButtonGroup>
             </Box>
         </Box>
@@ -91,7 +91,7 @@ const ToolbarItems = ({ id, title }) => {
                             <ListItem>
                                 <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={() => onClickDownload(volume.volume)}>
                                     <Button> Preparing Volume {volume.volume}</Button>
-                                    <IconButton  >
+                                    <IconButton aria-label={'download-icon-volume'}  >
                                         <DownloadIcon />
                                     </IconButton>
                                 </ButtonGroup>
@@ -99,7 +99,7 @@ const ToolbarItems = ({ id, title }) => {
                             {volume.chapters.length > 0 && volume.chapters.map((chapter) => <ListItem key={chapter.chapter} className="flex gap-3 items-center">
                                 <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={() => onClickDownload(volume.volume, chapter.chapter)}>
                                     <Button> Chapter {chapter.chapter}</Button>
-                                    <IconButton icon={<DownloadIcon />} />
+                                    <IconButton icon={<DownloadIcon />}  aria-label={'download-icon-chapter'}/>
                                 </ButtonGroup>
                             </ListItem>)}
                         </List>

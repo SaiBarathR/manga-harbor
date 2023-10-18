@@ -5,7 +5,7 @@ const HttpService = (function () {
     const API = axios.create({
         baseURL: app.baseUrl['mangaDex']
     });
-    var service = {};
+    const service = {};
     const urls = app.urls
 
     service.post = function (key, data) {
