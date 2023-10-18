@@ -17,7 +17,8 @@ export const PreparingForDownloadList = ({ dispatch, preparingZips }) => {
                     return preparingZipsItem.chapters.length > 0 && preparingZipsItem.chapters.map((item, index) => <PreparingForDownloadListItem key={item + index} name={preparingZipsItem.name + " Chapter: " + item} />)
                 })}
                 {preparingZips.map((preparingZipsItem, index) => {
-                    return preparingZipsItem.volumes.length > 0 && preparingZipsItem.volumes.map((item, index) => <PreparingForDownloadListItem key={item + index} name={preparingZipsItem.name + " Volume: " + item} />)
+                    return preparingZipsItem.method && (preparingZipsItem.method === 'byManga' ? preparingZipsItem.volumes.length > 0 && <PreparingForDownloadListItem key={preparingZipsItem.name + index + preparingZipsItem.method} name={preparingZipsItem.name} />
+                        : preparingZipsItem.volumes.length > 0 && preparingZipsItem.volumes.map((item, index) => <PreparingForDownloadListItem key={item + index} name={preparingZipsItem.name + " Volume: " + item} />))
                 })}
             </List>
         </AccordionPanel>
