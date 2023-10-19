@@ -1,5 +1,5 @@
 import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, ButtonGroup, Grid, GridItem, Heading, IconButton, List, ListItem, Skeleton, Text, Tooltip } from '@chakra-ui/react'
-import React, { useEffect, } from 'react'
+import React, { useEffect, useMemo, } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchMangaById, fetchVolumeList } from '../store/mangaSlice';
 import { TagRenderer } from './commonComponents/SearchBar';
@@ -26,7 +26,7 @@ export default function MangaDetails() {
     </Skeleton> : <Box className='w-[96%]'>
         <Box className='flex flex-col items-center'>
             <MangaDetailsHeader manga={mangaDetails} dispatch={dispatch} />
-            <VolumeList id={mangaDetails.id} title={mangaDetails.title} />
+            <MangaFeed id={mangaDetails.id} title={mangaDetails.title} />
         </Box>
     </Box>)
 }
@@ -73,9 +73,12 @@ const MangaDetailsHeader = ({ manga, dispatch }) => {
     </Box>
 }
 
-const VolumeList = ({ id, title }) => {
+const MangaFeed = ({ id, title }) => {
     const volumes = useSelector((state) => state.manga.volumes);
     const dispatch = useDispatch()
+    const pendingList = useSelector((state) => state.mangaDownloader.preparingZips)
+    const currentPendingList = useMemo(() => pendingList.length > 0 ? pendingList.filter((item) => item.name === title) : [], [pendingList, title])
+    const method = (currentPendingList.length > 0 && currentPendingList[0].method) ? currentPendingList[0].method : null;
 
     const onClickDownload = async (vol, chapter = null) => {
         let volume = (vol === 'none') ? 0 : vol;
@@ -88,35 +91,67 @@ const VolumeList = ({ id, title }) => {
 
     return <Accordion className=" w-full" allowMultiple>
         <Grid templateColumns='repeat(6, 1fr)' gap={6} px={4} mb={20}>
-            {volumes && volumes.length > 0 && volumes.map((volume) => volume.chapters.length > 0 && <GridItem w='100%' rounded={'lg'} key={volume.volume} >
-                <AccordionItem p={0} border={'1px solid rgba(255, 255, 255, 0.16)'} className="m-1 my-2 rounded-lg shadow-lg hover:rounded-lg">
-                    <AccordionButton className="rounded-lg">
-                        <Box as="span" flex='1' textAlign='left'>
-                            {volume.volume === 'none' ? 'Un-listed Chapters' : "Volume " + volume.volume}
-                        </Box>
-                        <AccordionIcon />
-                    </AccordionButton>
-                    <AccordionPanel pb={4} pt={1}>
-                        <List spacing={3}  >
-                            <ListItem>
-                                <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={() => onClickDownload(volume.volume)}>
-                                    <Button>{volume.volume}</Button>
-                                    <IconButton aria-label={'download-icon-volume'}  >
-                                        <DownloadIcon />
-                                    </IconButton>
-                                </ButtonGroup>
-                            </ListItem>
-                            {volume.chapters.length > 0 && volume.chapters.map((chapter) => <ListItem key={chapter.chapter} className="flex gap-3 items-center">
-                                <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={() => onClickDownload(volume.volume, chapter.chapter)}>
-                                    <Button> Chapter {chapter.chapter}</Button>
-                                    <IconButton icon={<DownloadIcon />} aria-label={'download-icon-chapter'} />
-                                </ButtonGroup>
-                            </ListItem>)}
-                        </List>
-                    </AccordionPanel>
-                </AccordionItem>
-            </GridItem>
-            )}
+            {volumes && volumes.length > 0 && volumes.map((volume) => volume.chapters.length > 0 &&
+                <VolumeList
+                    key={volume.volume}
+                    currentPendingList={currentPendingList}
+                    title={title}
+                    volume={volume}
+                    onClickDownload={onClickDownload}
+                    method={method}
+                />)}
         </Grid>
     </Accordion>
+}
+
+const VolumeList = ({ method, currentPendingList, volume, title, onClickDownload }) => {
+
+    const pendingChapterList = useMemo(() => {
+        const pendingChapterList = (currentPendingList[0]) ? currentPendingList[0].chapters || [] : []
+        if (pendingChapterList.length > 0) {
+            return volume.chapters.filter((item) => pendingChapterList.indexOf(item.chapter || '') !== -1)
+        }
+        return [];
+    }, [currentPendingList, volume.chapters])
+
+    const isChaptersDownloading = pendingChapterList.length > 0;
+    const disableVolumeDownload = method ? (method === 'byManga' || currentPendingList[0].volumes.includes(volume.volume === 'none' ? '0' : volume.volume) || isChaptersDownloading) : false
+
+    return <GridItem w='100%' rounded={'lg'}  >
+        <AccordionItem p={0} border={'1px solid rgba(255, 255, 255, 0.16)'} className="m-1 my-2 rounded-lg shadow-lg hover:rounded-lg">
+            <AccordionButton className="rounded-lg">
+                <Box as="span" flex='1' textAlign='left'>
+                    {volume.volume === 'none' ? 'Un-listed Chapters' : "Volume " + volume.volume}
+                </Box>
+                <AccordionIcon />
+            </AccordionButton>
+            <AccordionPanel pb={4} pt={1}>
+                <List spacing={3}  >
+                    <ListItem>
+                        <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={() => onClickDownload(volume.volume)}>
+                            <Button isLoading={disableVolumeDownload} loadingText={`Preparing ${isChaptersDownloading ? 'Chapter' : 'Volume'} as Zip`} >
+                                {volume.volume === 'none' ? 'Un-listed Chapters' : "Volume " + volume.volume}
+                            </Button>
+                            {(!disableVolumeDownload) && <IconButton aria-label={'download-icon-volume'}  >
+                                <DownloadIcon />
+                            </IconButton>}
+                        </ButtonGroup>
+                    </ListItem>
+                    {(!disableVolumeDownload || isChaptersDownloading) && volume.chapters.length > 0 && volume.chapters.map((chapter, index) => <ChapterList pendingChapterList={pendingChapterList} key={chapter.chapter} method={method} volume={volume} chapter={chapter} onClickDownload={onClickDownload} />)}
+                </List>
+            </AccordionPanel>
+        </AccordionItem>
+    </GridItem>
+}
+
+const ChapterList = ({ pendingChapterList, chapter, method, volume, onClickDownload }) => {
+
+    const disableChapter = pendingChapterList.filter(item => chapter.chapter === item.chapter).length > 0
+
+    return <ListItem className="flex gap-3 items-center">
+        <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={() => onClickDownload(volume.volume, chapter.chapter)}>
+            <Button isLoading={disableChapter} loadingText={`Preparing Chapter ${chapter.chapter} as Zip`}> Chapter {chapter.chapter}</Button>
+            {!disableChapter && <IconButton icon={<DownloadIcon />} aria-label={'download-icon-chapter'} />}
+        </ButtonGroup>
+    </ListItem>
 }
