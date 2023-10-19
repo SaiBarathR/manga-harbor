@@ -31,7 +31,7 @@ const DownloadingItems = ({ downloadingItem, index, dispatch }) => {
     const downloadManga = async (downloadingItem, dispatch, index) => {
         try {
             const { file, fileName } = await MangaService.download('download', downloadingItem, index, dispatch);
-            console.log('Prepared for downloading file: ', fileName)
+            console.log('downloaded file: ', fileName)
             downloadMangaUsingFile(file, fileName)
             dispatch(removeCompletedDownloads(downloadingItem))
         }

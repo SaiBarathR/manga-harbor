@@ -2,8 +2,6 @@ import { AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Lis
 
 export const PreparingForDownloadList = ({ dispatch, preparingZips }) => {
 
-    console.log("preparingZips:", preparingZips)
-
     return <AccordionItem p={0} border={'none'} className="m-1 rounded-lg shadow-lg hover:rounded-lg">
         <AccordionButton className="rounded-lg ">
             <Box as="span" flex='1' textAlign='left'>

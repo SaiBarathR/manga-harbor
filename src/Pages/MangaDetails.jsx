@@ -39,10 +39,10 @@ const MangaDetailsHeader = ({ manga, dispatch }) => {
     const onClickDownload = async () => {
         const params = {
             name: manga.title,
-            volume: volumes.map(item => item.volume),
+            volume: volumes.map(item => item.volume === 'none' ? '0' : item.volume),
             chapter: null
         }
-        console.log("🚀 ~ file: MangaDetails.jsx:45 ~ onClickDownload ~ params:", params)
+        console.log("onClickDownload ~ byManga:", params, volumes)
         dispatch(addNewItemToDownloadQueue(params))
         dispatch(downloadMangaByVolumeOrChapter(manga.id))
     };
@@ -80,7 +80,9 @@ const VolumeList = ({ id, title }) => {
     const onClickDownload = async (vol, chapter = null) => {
         let volume = (vol === 'none') ? 0 : vol;
         const params = !chapter ? id + '/' + volume : id + '/' + volume + '/' + chapter;
-        dispatch(addNewItemToDownloadQueue({ name: title, volume: volume, chapter: chapter }))
+        const newObj = { name: title, volume: volume, chapter: chapter };
+        console.log('onClickDownload by chap/vol', newObj, params, volumes)
+        dispatch(addNewItemToDownloadQueue(newObj))
         dispatch(downloadMangaByVolumeOrChapter(params))
     };
 
