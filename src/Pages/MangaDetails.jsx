@@ -35,12 +35,18 @@ const MangaDetailsHeader = ({ manga, dispatch }) => {
 
     const imageData = useMangaImage(manga.image)
     const volumes = useSelector((state) => state.manga.volumes);
+    const pendingList = useSelector((state) => state.mangaDownloader.preparingZips)
+    const downloadLimit = false
+    const currentPendingList = useMemo(() => pendingList.length > 0 ? pendingList.filter((item) => item.name === manga.title) : [], [pendingList, manga.title])
+    const method = (currentPendingList.length > 0 && currentPendingList[0].method) ? currentPendingList[0].method : null;
+    const disableMangaDownload = method || downloadLimit
 
     const onClickDownload = async () => {
         const params = {
             name: manga.title,
             volume: volumes.map(item => item.volume === 'none' ? '0' : item.volume),
-            chapter: null
+            chapter: null,
+            method: 'byManga'
         }
         console.log("onClickDownload ~ byManga:", params, volumes)
         dispatch(addNewItemToDownloadQueue(params))
@@ -65,8 +71,8 @@ const MangaDetailsHeader = ({ manga, dispatch }) => {
                 {manga.rating.value && <TagRenderer sm={'lg'} colorScheme={manga.rating.color}><StarIcon boxSize={3} />{manga.rating.value.toFixed(2)}</TagRenderer>}
                 {manga.follows && <TagRenderer sm={'lg'} ><BellIcon boxSize={3} />{manga.follows}</TagRenderer>}
                 <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={onClickDownload}>
-                    <Button>Download</Button>
-                    <IconButton aria-label={'download-icon-manga'} icon={<DownloadIcon />} />
+                    <Button isLoading={disableMangaDownload} loadingText='Preparing Zips'>Download</Button>
+                    {!disableMangaDownload && <IconButton aria-label={'download-icon-manga'} icon={<DownloadIcon />} />}
                 </ButtonGroup>
             </Box>
         </Box>
@@ -81,9 +87,9 @@ const MangaFeed = ({ id, title }) => {
     const method = (currentPendingList.length > 0 && currentPendingList[0].method) ? currentPendingList[0].method : null;
 
     const onClickDownload = async (vol, chapter = null) => {
-        let volume = (vol === 'none') ? 0 : vol;
+        let volume = (vol === 'none') ? '0' : vol.toString();
         const params = !chapter ? id + '/' + volume : id + '/' + volume + '/' + chapter;
-        const newObj = { name: title, volume: volume, chapter: chapter };
+        const newObj = { name: title, volume: volume, chapter: chapter, method: chapter ? 'byChapter' : 'byVolume' };
         console.log('onClickDownload by chap/vol', newObj, params, volumes)
         dispatch(addNewItemToDownloadQueue(newObj))
         dispatch(downloadMangaByVolumeOrChapter(params))
@@ -129,7 +135,10 @@ const VolumeList = ({ method, currentPendingList, volume, title, onClickDownload
                 <List spacing={3}  >
                     <ListItem>
                         <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={() => onClickDownload(volume.volume)}>
-                            <Button isLoading={disableVolumeDownload} loadingText={`Preparing ${isChaptersDownloading ? 'Chapter' : 'Volume'} as Zip`} >
+                            <Button
+                                isLoading={disableVolumeDownload}
+                                loadingText={disableVolumeDownload ? `Preparing ${isChaptersDownloading ? 'Chapter' : 'Volume'} as Zip` : ''}
+                            >
                                 {volume.volume === 'none' ? 'Un-listed Chapters' : "Volume " + volume.volume}
                             </Button>
                             {(!disableVolumeDownload) && <IconButton aria-label={'download-icon-volume'}  >
@@ -137,7 +146,15 @@ const VolumeList = ({ method, currentPendingList, volume, title, onClickDownload
                             </IconButton>}
                         </ButtonGroup>
                     </ListItem>
-                    {(!disableVolumeDownload || isChaptersDownloading) && volume.chapters.length > 0 && volume.chapters.map((chapter, index) => <ChapterList pendingChapterList={pendingChapterList} key={chapter.chapter} method={method} volume={volume} chapter={chapter} onClickDownload={onClickDownload} />)}
+                    {(!disableVolumeDownload || isChaptersDownloading) && volume.chapters.length > 0 && volume.chapters.map((chapter, index) =>
+                        <ChapterList
+                            pendingChapterList={pendingChapterList}
+                            key={chapter.chapter}
+                            method={method}
+                            volume={volume}
+                            chapter={chapter}
+                            onClickDownload={onClickDownload} />
+                    )}
                 </List>
             </AccordionPanel>
         </AccordionItem>
@@ -150,7 +167,12 @@ const ChapterList = ({ pendingChapterList, chapter, method, volume, onClickDownl
 
     return <ListItem className="flex gap-3 items-center">
         <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={() => onClickDownload(volume.volume, chapter.chapter)}>
-            <Button isLoading={disableChapter} loadingText={`Preparing Chapter ${chapter.chapter} as Zip`}> Chapter {chapter.chapter}</Button>
+            <Button
+                isLoading={disableChapter}
+                loadingText={disableChapter ? `Preparing Chapter ${chapter.chapter} as Zip` : ''}
+            >
+                Chapter {chapter.chapter}
+            </Button>
             {!disableChapter && <IconButton icon={<DownloadIcon />} aria-label={'download-icon-chapter'} />}
         </ButtonGroup>
     </ListItem>
