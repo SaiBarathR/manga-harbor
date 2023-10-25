@@ -8,7 +8,7 @@ const initialState = {
 
 export const downloadMangaByVolumeOrChapter = createAsyncThunk(
     'manga/downloadMangaByVolumeOrChapter',
-    async (params, { dispatch, getState }) => {
+    async (params) => {
         try {
             const resp = await MangaService.get('download', params);
             console.log("Manga prepared to download data", resp)
@@ -86,9 +86,8 @@ export const mangaDownloaderSlice = createSlice({
             state.loading = true;
         });
 
-        builder.addCase(downloadMangaByVolumeOrChapter.rejected, (state, action) => {
+        builder.addCase(downloadMangaByVolumeOrChapter.rejected, (state) => {
             state.loading = false;
-            state.error = action.error.message;
         });
     }
 
