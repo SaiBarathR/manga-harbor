@@ -21,6 +21,24 @@ export const fetchMangaByName = createAsyncThunk(
     }
 )
 
+function getMangaName(attributes) {
+        if (attributes) {
+            const title = attributes.title;
+            if (title && title.en) {
+                return title.en;
+            } else {
+                const altTitles = attributes.altTitles;
+                if (altTitles) {
+                    for (const altTitle of altTitles) {
+                        if (altTitle.en) {
+                            return altTitle.en;
+                        }
+                    }
+                }
+            }
+        }
+}
+
 function getColorName(rating) {
     switch (true) {
         case (rating < 1):
@@ -58,9 +76,9 @@ export const searchSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(fetchMangaByName.fulfilled, (state, action) => {
             const stats = action.payload && (action.payload.statistics || null)
-            state.options = action.payload.data.map((manga, index) => {
+            state.options = action.payload.data.map((manga) => {
                 return {
-                    title: manga.attributes.title.en || manga.attributes.title.ja || manga.attributes.altTitles[0].en || manga.attributes.title.ko || '',
+                    title: getMangaName(manga.attributes),
                     image: manga.image,
                     year: manga.attributes.year,
                     status: manga.attributes.status,
