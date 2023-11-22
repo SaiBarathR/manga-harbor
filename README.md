@@ -111,9 +111,9 @@ Replace `"http://localhost:9000/"` with the appropriate base URL of your Manga H
   npm start
   ```
 
-The React app should now be running on `http://localhost:3000/`.
+The React app should now be running on `http://localhost:3034/`.
 
-You can access the Manga Harbor web application by visiting `http://localhost:3000/` in your web browser.
+You can access the Manga Harbor web application by visiting `http://localhost:3034/` in your web browser.
 
 ### Additional Notes
 
