@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchMangaByName, setLoading, setSearchValue } from "../../store/searchSlice";
 import { useEffect, useMemo } from "react";
 import { MangaStatusColors } from "../../config/constants";
-import { setManga } from "../../store/mangaSlice";
 import useMangaImage from "../../hooks/useMangaImage";
 import { useNavigate } from "react-router-dom";
 
