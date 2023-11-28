@@ -7,6 +7,7 @@ import { useEffect, useMemo } from "react";
 import { MangaStatusColors } from "../../config/constants";
 import { setManga } from "../../store/mangaSlice";
 import useMangaImage from "../../hooks/useMangaImage";
+import { useNavigate } from "react-router-dom";
 
 function SearchBar() {
     const searchValue = useSelector((state) => state.search.searchValue);
@@ -16,6 +17,7 @@ function SearchBar() {
     const { colorMode } = useColorMode()
     const dark = useMemo(() => colorMode === 'dark', [colorMode])
     const handleChangeSearchVal = ({ target: { value } }) => dispatch(setSearchValue(value));
+    const navigate = useNavigate()
 
     useEffect(() => {
         !loading && dispatch(setLoading(true))
@@ -26,7 +28,8 @@ function SearchBar() {
 
     const onClickSearchItem = (manga) => {
         return () => {
-            dispatch(setManga(manga))
+            // dispatch(setManga(manga))
+            navigate(`/manga/${manga.id}`, { state: { manga: manga } })
         }
     }
 
