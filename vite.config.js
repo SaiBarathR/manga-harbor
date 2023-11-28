@@ -8,7 +8,7 @@ export default defineConfig({
     server: {
         host: true,
         strictPort: true,
-        port: 3034
+        port: 4000
     },
     define: {
         global: 'window',
