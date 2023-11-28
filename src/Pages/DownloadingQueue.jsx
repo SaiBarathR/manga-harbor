@@ -48,7 +48,7 @@ const DownloadingItems = ({ downloadingItem, index, dispatch }) => {
             </CircularProgress>
             <Box className="flex flex-col gap-1">
                 <Text fontSize={16}> {name}</Text>
-                <Box className="flex">
+                <Box className="flex gap-3">
                     <Text flexGrow={1}>{formatBytes(downloadingItem.loaded || 0)} / {formatBytes(downloadingItem.folderSize)}</Text>
                     <Text>{formatBytes(downloadingItem.rate || 0) + '/s'}</Text>
                 </Box>
