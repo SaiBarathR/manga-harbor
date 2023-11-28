@@ -1,6 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
-import MangaDetails from "../Pages/MangaDetails";
+import React, { Suspense, lazy } from 'react';
 import Home from "../Pages/Home";
+import Loader from "../common/loader";
+
+const MangaDetails = lazy(() => import('../Pages/MangaDetails'));
 
 export const router = createBrowserRouter([
     {
@@ -8,8 +11,12 @@ export const router = createBrowserRouter([
         element: <Home />,
         children: [
             {
-                path: "/manga/:mangaId",
-                element: <MangaDetails />,
+                path: "manga/:mangaId",
+                element: (
+                    <Suspense fallback={<Loader />}>
+                        <MangaDetails />
+                    </Suspense>
+                ),
             },
         ],
     }
