@@ -1,6 +1,5 @@
 import { Center, Container, useColorModeValue } from '@chakra-ui/react';
 import './App.css';
-import Home from './Pages/Home';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './routes/route';
 import { Box } from '@chakra-ui/react';
