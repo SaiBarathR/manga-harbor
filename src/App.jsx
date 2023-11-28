@@ -1,6 +1,9 @@
 import { Center, Container, useColorModeValue } from '@chakra-ui/react';
 import './App.css';
 import Home from './Pages/Home';
+import { RouterProvider } from 'react-router-dom';
+import { router } from './routes/route';
+import { Box } from '@chakra-ui/react';
 
 function App() {
   const bg = useColorModeValue('white', 'black')
@@ -8,8 +11,10 @@ function App() {
 
   return (
     <Container maxW={'none'} className="App" bg={bg} color={color}>
-      <Center>
-        <Home />
+      <Center >
+        <Box className="max-w-[2560px] w-full">
+          <RouterProvider router={router} />
+        </Box>
       </Center>
     </Container>
   );
