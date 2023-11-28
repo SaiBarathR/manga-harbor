@@ -1,9 +1,16 @@
 import { createBrowserRouter } from "react-router-dom";
 import MangaDetails from "../Pages/MangaDetails";
+import Home from "../Pages/Home";
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
     {
-        path: "/manga/view/",
-        element: <MangaDetails />,
-    },
+        path: "/",
+        element: <Home />,
+        children: [
+            {
+                path: "/manga/:mangaId",
+                element: <MangaDetails />,
+            },
+        ],
+    }
 ]);
