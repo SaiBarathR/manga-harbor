@@ -16,7 +16,8 @@ export default function MangaDetails() {
 
     const dispatch = useDispatch()
     const { mangaId } = useParams()
-    const { state: { manga = {} } } = useLocation();
+    const { state } = useLocation();
+    const manga = useMemo(() => state ? state.manga : {}, [state])
 
     useEffect(() => {
         if (mangaId) {
