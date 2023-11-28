@@ -1,17 +1,13 @@
 import Header from "./Header"
-// import Toolbar from "./Toolbar";
-import MangaDetails from "./MangaDetails";
 import DownloadManager from "./DownloadManager";
-import { Box } from "@chakra-ui/react";
+import { Outlet } from "react-router-dom";
 
 const Home = () => {
-    return (<Box className="max-w-[2560px] w-full">
+    return <>
         <Header />
-        <MangaDetails />
-        {/* <Toolbar /> */}
+        <Outlet />
         <DownloadManager />
-    </Box>
-    );
+    </>
 }
 
 export default Home;
