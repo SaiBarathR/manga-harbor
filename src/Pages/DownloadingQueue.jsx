@@ -24,7 +24,8 @@ export const DownloadingQueue = ({ dispatch, downloadingQueue }) => {
 
 
 const DownloadingItems = ({ downloadingItem, index, dispatch }) => {
-    
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const name = useMemo(() => String(downloadingItem.name.split('split_here')[1] + (downloadingItem.method === 'byChapter' ? (' Chapter: ' + downloadingItem.chapters) : downloadingItem.volumes.length > 1 ? '' : ' Volume: ' + downloadingItem.volumes[0])), [downloadingItem.chapters, downloadingItem.method, downloadingItem.name]);
     const percentCompleted = Math.round((downloadingItem.loaded * 100) / downloadingItem.folderSize);
 
