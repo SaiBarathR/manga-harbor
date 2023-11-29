@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import Header from "./Header"
-import Loader from "../common/loader";
+import Loader from "../common/Loader";
 
 const DownloadManager = lazy(() => import("./DownloadManager"));
 
