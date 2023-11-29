@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manga-harbor-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: manga-harbor
+  template:
+    metadata:
+      labels:
+        app: manga-harbor
+    spec:
+      containers:
+        - name: manga-harbor
+          image: meteoldrago/manga-harbor-docker:betaV.0.12
+          ports:
+            - containerPort: 80
