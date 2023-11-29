@@ -15,7 +15,7 @@ export default defineConfig({
         global: 'window',
     },
     build: {
-        outDir: "mh"
+        outDir: "build"
     },
     base: './'
 })
