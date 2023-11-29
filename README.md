@@ -20,6 +20,10 @@ Manga Harbor is a web application that allows users to discover, search, and dow
 - [Responsiveness](#responsiveness)
 - [Manga Harbor Server Integration](#manga-harbor-server-integration)
 - [Manga Harbor Server Repository](#manga-harbor-server-repository)
+- [Docker Setup](#docker-setup)
+  - [Steps to Run the React App with Manga Harbor Spring Server Using Docker](#steps-to-run-the-react-app-with-manga-harbor-spring-server-using-docker)
+- [Kubernetes Setup](#kubernetes-setup)
+  - [Steps to Run the React App with Manga Harbor Spring Server Using Kubernetes](#steps-to-run-the-react-app-with-manga-harbor-spring-server-using-kubernetes)
 - [List of Topics](#list-of-topics)
 
 ### Prerequisites
@@ -158,6 +162,98 @@ The Manga Harbor client interacts with the Manga Harbor Server to fetch manga da
 ## Manga Harbor Server Repository
 
 The Manga Harbor Server repository can be found at [manga-harbor-server](https://github.com/SaiBarathR/manga-harbor-server). Please refer to the server repository for detailed information on server setup, API endpoints, and backend implementation.
+
+## Docker Setup
+
+The Manga Harbor client and server can be run using Docker. The Docker images for the client is available on Docker Hub at [saibarathr/manga-harbor-client-docker](https://hub.docker.com/r/meteoldrago/manga-harbor-docker).
+
+### Steps to Run the React App with Manga Harbor Spring Server Using Docker
+
+#### 1. Pull the Docker Images
+
+First, pull the Docker images for the Manga Harbor client and server from Docker Hub.
+
+```bash
+
+# Pull the Manga Harbor client image
+
+docker pull meteoldrago/manga-harbor-docker
+
+```
+
+#### 2. Run the Docker Containers
+
+- Run the Manga Harbor React client using Docker:
+
+  ```bash
+
+  docker run -p 3000:3000 meteoldrago/manga-harbor-docker
+
+  ```
+
+The Manga Harbor React client should now be running on `http://localhost:3000/`.
+
+You can access the Manga Harbor web application by visiting `http://localhost:3000/` in your web browser.
+
+## Kubernetes Setup
+
+The Manga Harbor client and server can be run using Kubernetes. The Kubernetes deployment and service configuration files for the client is available in the `kubernetes` directory.
+
+### Steps to Run the React App Using Kubernetes
+
+#### 1. Create the Kubernetes Deployment and Service
+
+First, create the Kubernetes deployment and service for the Manga Harbor Client.
+
+```bash
+
+# Create Kubernetes namespace if not already created
+
+kubectl create namespace manga-harbor
+
+# Set the current context to the Kubernetes namespace
+
+kubectl config set-context --current --namespace=manga-harbor
+
+# Create the deployment and service for the Manga Harbor Spring server
+
+kubectl apply -f kubernetes/deployment.yaml
+
+kubectl apply -f kubernetes/service.yaml
+
+```
+
+#### 2. Start the Kubernetes Service
+
+Next, start the Kubernetes service for the Manga Harbor client.
+
+```bash
+
+# Check the deployment status
+
+kubectl get deployments -w -n manga-harbor
+
+# Check the service status
+
+kubectl get services -w -n manga-harbor
+
+# start the service
+
+minikube service manga-harbor-service -n manga-harbor
+
+```
+
+#### 3. Access the Manga Harbor Web Application
+
+Starting the service should open the Manga Harbor web application in your default browser. If not, you can access the Manga Harbor web application by visiting the service URL in your web browser.
+```bash
+
+# Get the service URL
+
+minikube service manga-harbor-service -n manga-harbor --url
+
+
+```
 
 ## List of Topics
 
