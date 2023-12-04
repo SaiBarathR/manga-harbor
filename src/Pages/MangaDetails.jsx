@@ -1,13 +1,13 @@
 import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, ButtonGroup, Grid, GridItem, Heading, IconButton, Image, List, ListItem, Skeleton, Text, Tooltip } from '@chakra-ui/react'
 import { useEffect, useMemo, } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchMangaById, fetchVolumeList, setManga } from '../store/mangaSlice';
+import { fetchMangaById, fetchVolumeList } from '../store/mangaSlice';
 import { TagRenderer } from './commonComponents/SearchBar';
 import useMangaImage from '../hooks/useMangaImage';
 import { MangaStatusColors } from '../config/constants';
 import { BellIcon, DownloadIcon, StarIcon } from '@chakra-ui/icons';
 import { addNewItemToDownloadQueue, downloadMangaByVolumeOrChapter } from '../store/mangaDownloaderSlice';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 export default function MangaDetails() {
 
@@ -16,22 +16,13 @@ export default function MangaDetails() {
 
     const dispatch = useDispatch()
     const { mangaId } = useParams()
-    const { state } = useLocation();
-    const manga = useMemo(() => state ? state.manga : {}, [state])
 
     useEffect(() => {
         if (mangaId) {
-            dispatch(setManga(manga))
+            dispatch(fetchMangaById(mangaId))
+            dispatch(fetchVolumeList(mangaId))
         }
-    }, [mangaId, manga, dispatch])
-
-    useEffect(() => {
-        if (mangaDetails.id) {
-            dispatch(fetchMangaById(mangaDetails.id))
-            dispatch(fetchVolumeList(mangaDetails.id))
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [mangaDetails.id])
+    }, [mangaId, dispatch])
 
     return mangaDetails.id && (loading ? <Skeleton className='h-[82vh] w-full'>
     </Skeleton> : <Box className='w-[96%]'>
