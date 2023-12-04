@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import MangaService from '../service/mangaService'
+import { constructMangaDetails } from '../utils'
 
 const initialState = {
     mangaDetails: {},
@@ -12,7 +13,7 @@ export const fetchMangaById = createAsyncThunk(
     async (id) => {
         try {
             const resp = await MangaService.get('manga', id)
-            return resp
+            return { ...resp.mangaData, ...resp.statsResponse }
         }
         catch (e) {
             console.log(e)
@@ -44,7 +45,8 @@ export const mangaSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(fetchMangaById.fulfilled, (state, action) => {
             try {
-                state.mangaDetails = { ...state.mangaDetails, ...action.payload.mangaData.data }
+                const stats = action.payload && (action.payload.statistics || null)
+                state.mangaDetails = constructMangaDetails(action.payload.data, stats)
                 state.loading = false;
             }
             catch (e) {
