@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import MangaService from '../service/mangaService'
+import { constructMangaDetails } from '../utils'
 
 const initialState = {
     searchValue: "",
@@ -21,51 +22,6 @@ export const fetchMangaByName = createAsyncThunk(
     }
 )
 
-function getMangaName(attributes) {
-        if (attributes) {
-            const title = attributes.title;
-            if (title && title.en) {
-                return title.en;
-            } else {
-                const altTitles = attributes.altTitles;
-                if (altTitles) {
-                    for (const altTitle of altTitles) {
-                        if (altTitle.en) {
-                            return altTitle.en;
-                        }
-                    }
-                }
-            }
-        }
-}
-
-function getColorName(rating) {
-    switch (true) {
-        case (rating < 1):
-            return "red";
-        case (rating < 2):
-            return "orange";
-        case (rating < 3):
-            return "yellow";
-        case (rating < 4):
-            return "pink";
-        case (rating < 5):
-            return "gray";
-        case (rating < 6):
-            return "gray";
-        case (rating < 7):
-            return "linkedin";
-        case (rating < 8):
-            return "purple";
-        case (rating < 9):
-            return "green";
-        case (rating < 10):
-            return "yellow";
-        default:
-            return "Invalid Rating";
-    }
-}
-
 export const searchSlice = createSlice({
     name: 'search',
     initialState,
@@ -76,17 +32,7 @@ export const searchSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(fetchMangaByName.fulfilled, (state, action) => {
             const stats = action.payload && (action.payload.statistics || null)
-            state.options = action.payload.data.map((manga) => {
-                return {
-                    title: getMangaName(manga.attributes),
-                    image: manga.image,
-                    year: manga.attributes.year,
-                    status: manga.attributes.status,
-                    id: manga.id,
-                    rating: stats ? { value: stats[manga.id].rating.average, color: getColorName(stats[manga.id].rating.average) } : {},
-                    follows: stats ? stats[manga.id].follows : null,
-                }
-            })
+            state.options = action.payload.data.map((manga) => constructMangaDetails(manga, stats))
             state.loading = false;
         })
         builder.addCase(fetchMangaByName.pending, (state) => {
