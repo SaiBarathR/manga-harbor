@@ -3,12 +3,12 @@ import { Box, IconButton, Image, InputGroup, InputLeftElement, InputRightElement
 import { AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList } from "@choc-ui/chakra-autocomplete";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMangaByName, setLoading, setSearchValue } from "../../store/searchSlice";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { MangaStatusColors } from "../../config/constants";
 import useMangaImage from "../../hooks/useMangaImage";
 import { useNavigate } from "react-router-dom";
 
-function SearchBar() {
+function SearchBar({ isMangaDetailsPage = false }) {
     const searchValue = useSelector((state) => state.search.searchValue);
     const options = useSelector((state) => state.search.options);
     const loading = useSelector((state) => state.search.loading);
@@ -17,6 +17,25 @@ function SearchBar() {
     const dark = useMemo(() => colorMode === 'dark', [colorMode])
     const handleChangeSearchVal = ({ target: { value } }) => dispatch(setSearchValue(value));
     const navigate = useNavigate()
+    const searchInputRef = useRef(null);
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.ctrlKey && event.key === 'k') {
+                event.preventDefault();
+                event.stopPropagation();
+                if (searchInputRef.current) {
+                    if (document.activeElement === searchInputRef.current) {
+                        searchInputRef.current.blur();
+                    } else {
+                        searchInputRef.current.focus();
+                    }
+                }
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [navigate]);
 
     useEffect(() => {
         !loading && dispatch(setLoading(true))
@@ -27,8 +46,7 @@ function SearchBar() {
 
     const onClickSearchItem = (manga) => {
         return () => {
-            // dispatch(setManga(manga))
-            navigate(`/manga/${manga.id}`, { state: { manga: manga } })
+            navigate(`/manga/${manga.id}`)
         }
     }
 
@@ -36,22 +54,26 @@ function SearchBar() {
         <Box className="min-w-[300px] max-w-[1200px] w-[80%]">
             <AutoComplete openOnFocus disableFilter={true} isLoading={loading}>
                 <InputGroup>
-                    <InputLeftElement pointerEvents='none'>
+                    <InputLeftElement pointerEvents='none' height={'100%'} >
                         <Search2Icon color={dark ? 'gray.300' : 'blackAlpha.500'} />
                     </InputLeftElement>
-                    <AutoCompleteInput variant="filled" placeholder="search" size={'md'} rounded={'md'} border={'none'} outline={'none'}
+                    <AutoCompleteInput variant="filled" placeholder="search"
+                        size={isMangaDetailsPage ? 'md' : 'lg'}
+                        rounded={'md'} border={'none'} outline={'none'}
                         bg={dark ? '#2C2C2C' : '#D8E8FE'}
                         _focus={{ border: "none", bg: dark ? '#2C2C2C' : '#D8E8FE', }}
                         _hover={{ bg: dark ? '#2C2C2C' : '#D8E8FE' }}
                         value={searchValue}
                         onChange={handleChangeSearchVal}
                         loadingIcon={<></>}
+                        id='search-bar-input'
+                        ref={searchInputRef}
                     />
-                    <InputRightElement>
+                    {searchValue && <InputRightElement>
                         <IconButton _hover={{ bg: dark ? '#676973' : '#adadc7' }} bg={dark ? 'gray' : 'whiteAlpha.300'} size={'xs'} onClick={() => handleChangeSearchVal({ target: { value: "" } })}>
                             <SmallCloseIcon />
                         </IconButton>
-                    </InputRightElement>
+                    </InputRightElement>}
                 </InputGroup>
                 <AutoCompleteList maxH={'600px'} bg={dark ? '#2C2C2C !important' : '#D8E8FE !important'}
                     loadingState={<Stack className="w-[100%] flex flex-col items-center">{[1, 2, 3, 4].map((item) => <Skeleton key={item} rounded={'6px'} className="my-2  rounded-md w-[92%] md:w-[97%] h-[45px]" />)}</Stack>}
