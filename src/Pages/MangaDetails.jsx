@@ -1,5 +1,5 @@
 import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, ButtonGroup, Grid, GridItem, Heading, IconButton, Image, List, ListItem, Skeleton, Text, Tooltip } from '@chakra-ui/react'
-import { useEffect, useMemo, } from 'react'
+import { useEffect, useMemo, useState, } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchMangaById, fetchVolumeList } from '../store/mangaSlice';
 import { TagRenderer } from './commonComponents/SearchBar';
@@ -35,6 +35,8 @@ export default function MangaDetails() {
 
 const MangaDetailsHeader = ({ manga, dispatch }) => {
 
+    const [isExpanded, setIsExpanded] = useState(false);
+
     const imageData = useMangaImage(manga.image)
     const volumes = useSelector((state) => state.manga.volumes);
     const pendingList = useSelector((state) => state.mangaDownloader.preparingZips)
@@ -42,6 +44,7 @@ const MangaDetailsHeader = ({ manga, dispatch }) => {
     const currentPendingList = useMemo(() => pendingList.length > 0 ? pendingList.filter((item) => item.name === manga.title) : [], [pendingList, manga.title])
     const method = (currentPendingList.length > 0 && currentPendingList[0].method) ? currentPendingList[0].method : null;
     const disableMangaDownload = method || downloadLimit
+    const toggleLines = () => setIsExpanded(!isExpanded);    
 
     const onClickDownload = async () => {
         const params = {
@@ -64,9 +67,12 @@ const MangaDetailsHeader = ({ manga, dispatch }) => {
             <Tooltip label={manga.title} hasArrow arrowSize={10} placement="top" >
                 <Heading >{manga.title}</Heading>
             </Tooltip>
-            <Text py={2}>
+            <Text mt={2} className={isExpanded ? 'text-justify' : 'text-justify line-clamp-3'}>
                 {manga.attributes && (manga.attributes.description.en || '')}
             </Text>
+            <Button mb={2} onClick={toggleLines} variant='link' colorScheme='blue' size='sm' >
+                {isExpanded ? 'Read Less' : 'Read More'}
+            </Button>
             <Box className="flex flex-col md:flex-row gap-2 md:gap-2 my-2">
                 {manga.status && <TagRenderer sm={'lg'} colorScheme={MangaStatusColors[manga.status]}>{manga.year || 'unknown'} - {manga.status}</TagRenderer>}
                 {manga.rating.value && <TagRenderer sm={'lg'} colorScheme={manga.rating.color}><StarIcon boxSize={3} />{manga.rating.value.toFixed(2)}</TagRenderer>}
