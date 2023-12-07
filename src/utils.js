@@ -63,6 +63,7 @@ function getColorName(rating) {
 export function constructMangaDetails(manga, stats) {
     return {
         title: getMangaName(manga.attributes),
+        attributes: manga.attributes,
         image: manga.image,
         year: manga.attributes.year,
         status: manga.attributes.status,
