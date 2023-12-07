@@ -7,7 +7,7 @@ const MangaDetails = lazy(() => import('../Pages/MangaDetails'));
 
 export const router = createBrowserRouter([
     {
-        path: "/",
+        path: "*",
         element: <Home />,
         children: [
             {
@@ -19,5 +19,5 @@ export const router = createBrowserRouter([
                 ),
             },
         ],
-    }
+    },
 ]);
