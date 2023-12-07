@@ -89,7 +89,7 @@ function SearchBar({ isMangaDetailsPage = false }) {
     );
 }
 
-export const TagRenderer = ({ colorScheme, children, size = 'sm' }) => <Tag rounded={'md'} gap={size = 'lg' ? 3 : 1} p={size = 'lg' && 2} fontSize={size = 'lg' && 18} fontWeight={'bold'} width={'fit-content'} colorScheme={colorScheme}>{children}</Tag>
+export const TagRenderer = ({ colorScheme, children, size = 'sm' }) => <Tag rounded={'md'} gap={size === 'lg' ? 3 : 1} p={size === 'lg' && 2} fontSize={size === 'lg' && 18} fontWeight={'bold'} width={'fit-content'} colorScheme={colorScheme}>{children}</Tag>
 
 export function Items({ manga, dark }) {
     const imageData = useMangaImage(manga.image)
