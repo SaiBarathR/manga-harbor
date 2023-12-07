@@ -56,11 +56,11 @@ const MangaDetailsHeader = ({ manga, dispatch }) => {
     };
 
     return <Box _dark={{ bg: 'blackAlpha.600' }} bg={'#adcdf7'}
-        className="flex w-full p-1 items-center  my-2 mx-8 lg:mx-10 md:p-2 lg:p-4 rounded-md shadow-xl">
+        className="flex flex-col md:flex-row w-full p-1 items-center   my-2 mx-8 lg:mx-10 md:p-2 lg:p-4 rounded-md shadow-xl">
         {!imageData ? <Box width={'252px'}> <Skeleton height={'330px'} width={'202px'} /> </Box> :
-            <Image rounded={'lg'} maxW={'10%'} maxH={'10%'} src={imageData} alt='m' display={!imageData && 'none'} />
+            <Image rounded={'lg'} maxW={'10%'} maxH={'10%'} src={imageData} alt='m' display={!imageData && 'none'} minW={'202px'} minH={'330px'} objectFit='contain' aspectRatio={'square'} />
         }
-        <Box className="ml-8 self-start flex flex-col">
+        <Box className="md:ml-8 self-start flex flex-col items-center w-full md:items-start">
             <Tooltip label={manga.title} hasArrow arrowSize={10} placement="top" >
                 <Heading >{manga.title}</Heading>
             </Tooltip>
@@ -97,7 +97,7 @@ const MangaFeed = ({ id, title }) => {
     };
 
     return <Accordion className=" w-full" allowMultiple>
-        <Grid templateColumns='repeat(6, 1fr)' gap={6} px={4} mb={20}>
+        <Grid gap={6} templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(3, 1fr)", lg: "repeat(4, 1fr)" }} >
             {volumes && volumes.length > 0 && volumes.map((volume) => volume.chapters.length > 0 &&
                 <VolumeList
                     key={volume.volume}
@@ -124,7 +124,7 @@ const VolumeList = ({ method, currentPendingList, volume, title, onClickDownload
     const isChaptersDownloading = pendingChapterList.length > 0;
     const disableVolumeDownload = method ? (method === 'byManga' || currentPendingList[0].volumes.includes(volume.volume === 'none' ? '0' : volume.volume) || isChaptersDownloading) : false
 
-    return <GridItem w='100%' rounded={'lg'}  >
+    return <GridItem colSpan={1} className="w-full">
         <AccordionItem p={0} border={'1px solid rgba(255, 255, 255, 0.16)'} className="m-1 my-2 rounded-lg shadow-lg hover:rounded-lg">
             <AccordionButton className="rounded-lg">
                 <Box as="span" flex='1' textAlign='left'>
