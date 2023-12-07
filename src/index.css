@@ -308,8 +308,8 @@ code {
   box-shadow: 0px 0px var(--main-color);
 }
 
-.searchbarAutocompleListItem {
+.search-bar-autocomplete-listI-tem {
   background: transparent !important;
   padding: 0px !important;
-  margin: 0px !important;
+  margin: 0px !important;  
 }
