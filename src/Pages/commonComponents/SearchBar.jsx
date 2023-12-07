@@ -69,17 +69,17 @@ function SearchBar({ isMangaDetailsPage = false }) {
                         id='search-bar-input'
                         ref={searchInputRef}
                     />
-                    {searchValue && <InputRightElement>
+                    {searchValue && <InputRightElement height={'100%'} >
                         <IconButton _hover={{ bg: dark ? '#676973' : '#adadc7' }} bg={dark ? 'gray' : 'whiteAlpha.300'} size={'xs'} onClick={() => handleChangeSearchVal({ target: { value: "" } })}>
                             <SmallCloseIcon />
                         </IconButton>
                     </InputRightElement>}
                 </InputGroup>
-                <AutoCompleteList maxH={'600px'} bg={dark ? '#2C2C2C !important' : '#D8E8FE !important'}
-                    loadingState={<Stack className="w-[100%] flex flex-col items-center">{[1, 2, 3, 4].map((item) => <Skeleton key={item} rounded={'6px'} className="my-2  rounded-md w-[92%] md:w-[97%] h-[45px]" />)}</Stack>}
+                <AutoCompleteList maxH={'600px'} bg={dark ? '#2C2C2C !important' : '#D8E8FE !important'} overflowY={'auto'} 
+                    loadingState={<Stack className="w-[100%] flex flex-col items-center overflow-y-auto">{[1, 2, 3, 4].map((item) => <Skeleton key={item} rounded={'6px'} className="my-2  rounded-md w-[92%] md:w-[97%] h-[45px]" />)}</Stack>}
                 >
                     {options.map((manga, index) => {
-                        return <AutoCompleteItem onClick={onClickSearchItem(manga)} key={`option-${manga.id}`} value={manga.title} align="center" className="searchbarAutocompleListItem capitalize">
+                        return <AutoCompleteItem onClick={onClickSearchItem(manga)} key={`option-${manga.id}`} value={manga.title} align="center" className="search-bar-autocomplete-listI-tem capitalize">
                             {loading ? <></> : <Items manga={manga} dark={dark} />}
                         </AutoCompleteItem>
                     })}
@@ -94,9 +94,10 @@ export const TagRenderer = ({ colorScheme, children, size = 'sm' }) => <Tag roun
 export function Items({ manga, dark }) {
     const imageData = useMangaImage(manga.image)
 
-    return <Box bg={dark ? 'blackAlpha.600' : '#adcdf7'} className="flex w-full p-1 items-center  my-2 mx-8 lg:mx-10 md:p-2 lg:p-4 rounded-md shadow-xl hover:scale-105 delay-75 transition ease-in-out">
+    return <Box bg={dark ? 'blackAlpha.600' : '#adcdf7'}
+        className="flex w-full p-1 items-center  my-2 mx-8 lg:mx-10 md:p-1 lg:p-2 rounded-md shadow-xl hover:scale-105 delay-75 transition-all ease-in-out duration-150 ">
         {!imageData ? <Box width={'52px'}> <Skeleton height={'52px'} width={'52px'} /> </Box> :
-            <Image boxSize={'8%'} minW={'52px'} minH={'52px'} className="aspect-square" aspectRatio={'square'} objectFit='contain' src={imageData} alt='m' display={!imageData && 'none'}
+            <Image boxSize={'8%'} className="aspect-square" aspectRatio={'square'} objectFit='contain' src={imageData} alt='m' display={!imageData && 'none'}
             />}
         <Box className="ml-2">
             <Tooltip label={manga.title} hasArrow arrowSize={10} placement="top" >
