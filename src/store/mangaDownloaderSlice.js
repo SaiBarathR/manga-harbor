@@ -14,6 +14,9 @@ export const downloadMangaByVolumeOrChapter = createAsyncThunk(
             console.log("Manga prepared to download data", resp)
             return resp;
         } catch (error) {
+            if (error.response) {
+                console.log((error.response.data))
+            }
             console.error('An error occurred:', error);
         }
     }
