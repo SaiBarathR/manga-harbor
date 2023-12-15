@@ -6,11 +6,12 @@ import { Box } from '@chakra-ui/react';
 
 function App() {
   const bg = useColorModeValue('white', 'black')
+  const bgGradient = useColorModeValue('linear(to-r, gray.500, blue.500)', 'linear(to-r, gray.800, blue.700)')
   const color = useColorModeValue('black', 'white')
 
   return (
-    <Container maxW={'none'} className="App" bg={bg} color={color}>
-      <Center >
+    <Container maxW={'none'} className="App" bg={bg} bgGradient={bgGradient} color={color}>
+      <Center>
         <Box className="max-w-[2560px] w-full">
           <RouterProvider router={router} />
         </Box>
