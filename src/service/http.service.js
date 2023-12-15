@@ -13,7 +13,7 @@ const HttpService = (function () {
             return res;
         }).catch(e => {
             console.log('ERROR:', e);
-            checkNetorkError(e);
+            checkNetworkError(e);
             return e.message
         });
     }
@@ -25,10 +25,9 @@ const HttpService = (function () {
         });
     }
 
-    function checkNetorkError(error) {
+    function checkNetworkError(error) {
         if (error.toJSON().message === 'Network Error') {
             console.log(error)
-            // showErrorNotification('Network Error');
         }
     }
     return service;
