@@ -4,6 +4,7 @@ import MangaService from '../service/mangaService'
 const initialState = {
     preparingZips: [],
     itemsToDownload: [],
+    downloadLimit: 3,
 }
 
 export const downloadMangaByVolumeOrChapter = createAsyncThunk(
