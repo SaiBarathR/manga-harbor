@@ -44,15 +44,14 @@ function SearchBar({ isMangaDetailsPage = false }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchValue])
 
-    const onClickSearchItem = (manga) => {
-        return () => {
-            navigate(`/manga/${manga.id}`)
-        }
+    const onSelectOption = (option) => {
+        const { item: { originalValue } } = option
+        navigate(`/manga/${originalValue}`)
     }
 
     return (
         <Box className="min-w-[300px] max-w-[1200px] w-[80%]">
-            <AutoComplete openOnFocus disableFilter={true} isLoading={loading}>
+            <AutoComplete openOnFocus rollNavigation={true} onSelectOption={onSelectOption} disableFilter={true} isLoading={loading}>
                 <InputGroup>
                     <InputLeftElement pointerEvents='none' height={'100%'} >
                         <Search2Icon color={dark ? 'gray.300' : 'blackAlpha.500'} />
@@ -75,11 +74,11 @@ function SearchBar({ isMangaDetailsPage = false }) {
                         </IconButton>
                     </InputRightElement>}
                 </InputGroup>
-                <AutoCompleteList maxH={'600px'} bg={dark ? '#2C2C2C !important' : '#D8E8FE !important'} overflowY={'auto'} 
+                <AutoCompleteList maxH={'600px'} bg={dark ? '#2C2C2C !important' : '#D8E8FE !important'} overflowY={'auto'}
                     loadingState={<Stack className="w-[100%] flex flex-col items-center overflow-y-auto">{[1, 2, 3, 4].map((item) => <Skeleton key={item} rounded={'6px'} className="my-2  rounded-md w-[92%] md:w-[97%] h-[45px]" />)}</Stack>}
                 >
                     {options.map((manga, index) => {
-                        return <AutoCompleteItem onClick={onClickSearchItem(manga)} key={`option-${manga.id}`} value={manga.title} align="center" className="search-bar-autocomplete-listI-tem capitalize">
+                        return <AutoCompleteItem key={`option-${manga.id}`} value={manga.id} align="center" className="search-bar-autocomplete-listI-tem capitalize">
                             {loading ? <></> : <Items manga={manga} dark={dark} />}
                         </AutoCompleteItem>
                     })}
