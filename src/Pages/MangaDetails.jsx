@@ -40,11 +40,12 @@ const MangaDetailsHeader = ({ manga, dispatch }) => {
     const imageData = useMangaImage(manga.image)
     const volumes = useSelector((state) => state.manga.volumes);
     const pendingList = useSelector((state) => state.mangaDownloader.preparingZips)
-    const downloadLimit = false
+    const downloadLimit = useSelector((state) => state.mangaDownloader.downloadLimit)
     const currentPendingList = useMemo(() => pendingList.length > 0 ? pendingList.filter((item) => item.name === manga.title) : [], [pendingList, manga.title])
     const method = (currentPendingList.length > 0 && currentPendingList[0].method) ? currentPendingList[0].method : null;
-    const disableMangaDownload = method || downloadLimit
-    const toggleLines = () => setIsExpanded(!isExpanded);    
+    const isDownloadLimitReached = (downloadLimit <= pendingList.length)
+    const disableMangaDownload = method || isDownloadLimitReached
+    const toggleLines = () => setIsExpanded(!isExpanded);
 
     const onClickDownload = async () => {
         const params = {
@@ -77,10 +78,15 @@ const MangaDetailsHeader = ({ manga, dispatch }) => {
                 {manga.status && <TagRenderer sm={'lg'} colorScheme={MangaStatusColors[manga.status]}>{manga.year || 'unknown'} - {manga.status}</TagRenderer>}
                 {manga.rating.value && <TagRenderer sm={'lg'} colorScheme={manga.rating.color}><StarIcon boxSize={3} />{manga.rating.value.toFixed(2)}</TagRenderer>}
                 {manga.follows && <TagRenderer sm={'lg'} ><BellIcon boxSize={3} />{manga.follows}</TagRenderer>}
-                <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={onClickDownload}>
-                    <Button isLoading={disableMangaDownload} loadingText='Preparing Zips'>Download</Button>
-                    {!disableMangaDownload && <IconButton aria-label={'download-icon-manga'} icon={<DownloadIcon />} />}
-                </ButtonGroup>
+                {isDownloadLimitReached ? <TagRenderer sm={'lg'} colorScheme={'red'}>
+                    {`Max of ${downloadLimit} downloads reached`}
+                </TagRenderer>
+                    :
+                    <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={onClickDownload}>
+                        <Button isLoading={disableMangaDownload} loadingText='Preparing Zips'>Download</Button>
+                        {!disableMangaDownload && <IconButton aria-label={'download-icon-manga'} icon={<DownloadIcon />} />}
+                    </ButtonGroup>
+                }
             </Box>
         </Box>
     </Box>
