@@ -4,8 +4,11 @@ import { updateItemsToDownload } from '../store/mangaDownloaderSlice';
 
 const MangaService = (function () {
 
+    const env = import.meta.env.MODE
+    console.log('env', env)
+    const baseURL = env === 'development' ? app.baseUrl['springBoot'] : import.meta.env.VITE_APP_BASE_URL
     const API = axios.create({
-        baseURL: app.baseUrl['springBoot']
+        baseURL: baseURL,
     });
     let service = {};
     const urls = app.urls
