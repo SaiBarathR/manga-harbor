@@ -90,7 +90,7 @@ The Manga Harbor Spring server should now be running on `http://localhost:9000/`
 
 #### 4. Configure API Endpoint (Optional)
 
-If the Spring server is running on a different port or host, update the API endpoint in the React app. Open the `src/config/app.json` file and modify the `baseUrl` accordingly:
+If the Spring server is running on a different port or host, update the API endpoint in the React app. Open the `src/config/config.json` file and modify the `baseUrl` accordingly:
 
 ```json
 {
