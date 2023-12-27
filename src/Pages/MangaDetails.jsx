@@ -1,4 +1,7 @@
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, ButtonGroup, Grid, GridItem, Heading, IconButton, Image, List, ListItem, Skeleton, Text, Tooltip } from '@chakra-ui/react'
+import {
+    Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, ButtonGroup, Grid,
+    GridItem, Heading, IconButton, Image, List, ListItem, Skeleton, Text, Tooltip, useMediaQuery
+} from '@chakra-ui/react'
 import { useEffect, useMemo, useState, } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchMangaById, fetchVolumeList } from '../store/mangaSlice';
@@ -8,6 +11,8 @@ import { MangaStatusColors } from '../config/constants';
 import { BellIcon, DownloadIcon, StarIcon } from '@chakra-ui/icons';
 import { addNewItemToDownloadQueue, downloadMangaByVolumeOrChapter } from '../store/mangaDownloaderSlice';
 import { useParams } from 'react-router-dom';
+
+const RoundedSkeleton = (props) => <Skeleton rounded={'md'} {...props} />
 
 export default function MangaDetails() {
 
@@ -24,19 +29,17 @@ export default function MangaDetails() {
         }
     }, [mangaId, dispatch])
 
-    return mangaDetails.id && (loading ? <Skeleton className='h-[82vh] w-full'>
-    </Skeleton> : <Box className='w-[96%]'>
+    return <Box className='w-[96%]'>
         <Box className='flex flex-col items-center'>
-            <MangaDetailsHeader manga={mangaDetails} dispatch={dispatch} />
-            <MangaFeed id={mangaDetails.id} title={mangaDetails.title} />
+            <MangaDetailsHeader loading={loading} manga={mangaDetails} dispatch={dispatch} />
+            <MangaFeed loading={loading} id={mangaDetails.id || null} title={mangaDetails.title || null} />
         </Box>
-    </Box>)
+    </Box>
 }
 
-const MangaDetailsHeader = ({ manga, dispatch }) => {
+const MangaDetailsHeader = ({ manga = {}, loading = false, dispatch }) => {
 
     const [isExpanded, setIsExpanded] = useState(false);
-
     const imageData = useMangaImage(manga.image)
     const volumes = useSelector((state) => state.manga.volumes);
     const pendingList = useSelector((state) => state.mangaDownloader.preparingZips)
@@ -46,6 +49,7 @@ const MangaDetailsHeader = ({ manga, dispatch }) => {
     const isDownloadLimitReached = (downloadLimit <= pendingList.length)
     const disableMangaDownload = method || isDownloadLimitReached
     const toggleLines = () => setIsExpanded(!isExpanded);
+    const [isMobile] = useMediaQuery("(max-width: 500px)")
 
     const onClickDownload = async () => {
         const params = {
@@ -59,40 +63,45 @@ const MangaDetailsHeader = ({ manga, dispatch }) => {
         dispatch(downloadMangaByVolumeOrChapter(manga.id))
     };
 
-    return <Box _dark={{ bg: 'blackAlpha.600' }} bg={'#adcdf7'}
-        className="flex flex-col md:flex-row w-full p-1 items-center   my-2 mx-8 lg:mx-10 md:p-2 lg:p-4 rounded-md shadow-xl">
-        {!imageData ? <Box width={'252px'}> <Skeleton height={'330px'} width={'202px'} /> </Box> :
-            <Image rounded={'lg'} maxW={'10%'} maxH={'10%'} src={imageData} alt='m' display={!imageData && 'none'} minW={'202px'} minH={'330px'} objectFit='contain' aspectRatio={'square'} />
+    return <Box _dark={{ bg: 'blackAlpha.600' }} bg={'#adcdf7'} className="flex overflow-auto flex-col gap-2 md:flex-row w-full p-2 items-center animate-appear my-4 md:my-2 mx-8 lg:mx-10 md:p-4 lg:p-4 rounded-md shadow-xl">
+        {(!imageData || loading) ? <RoundedSkeleton minW={'202px'} minH={'330px'} maxW={'10%'} maxH={'10%'} /> :
+            <Image rounded={'lg'} maxW={'10%'} maxH={'10%'} src={imageData} alt='m' display={!imageData && 'none'} minW={'202px'} minH={'330px'} objectFit='contain' className='animate-appear' />
         }
-        <Box className="md:ml-8 self-start flex flex-col items-center w-full md:items-start">
-            <Tooltip label={manga.title} hasArrow arrowSize={10} placement="top" >
-                <Heading >{manga.title}</Heading>
-            </Tooltip>
-            <Text mt={2} className={isExpanded ? 'text-justify' : 'text-justify line-clamp-3'}>
-                {manga.attributes && (manga.attributes.description.en || '')}
-            </Text>
-            <Button mb={2} onClick={toggleLines} variant='link' colorScheme='blue' size='sm' >
-                {isExpanded ? 'Read Less' : 'Read More'}
-            </Button>
-            <Box className="flex flex-col md:flex-row gap-2 md:gap-2 my-2">
-                {manga.status && <TagRenderer sm={'lg'} colorScheme={MangaStatusColors[manga.status]}>{manga.year || 'unknown'} - {manga.status}</TagRenderer>}
-                {manga.rating.value && <TagRenderer sm={'lg'} colorScheme={manga.rating.color}><StarIcon boxSize={3} />{manga.rating.value.toFixed(2)}</TagRenderer>}
-                {manga.follows && <TagRenderer sm={'lg'} ><BellIcon boxSize={3} />{manga.follows}</TagRenderer>}
-                {isDownloadLimitReached ? <TagRenderer sm={'lg'} colorScheme={'red'}>
-                    {`Max of ${downloadLimit} downloads reached`}
-                </TagRenderer>
-                    :
-                    <ButtonGroup rounded={'lg'} isAttached variant='outline' onClick={onClickDownload}>
-                        <Button isLoading={disableMangaDownload} loadingText='Preparing Zips'>Download</Button>
-                        {!disableMangaDownload && <IconButton aria-label={'download-icon-manga'} icon={<DownloadIcon />} />}
-                    </ButtonGroup>
+        <Box className="md:ml-8 gap-3 self-start flex flex-col items-center w-full md:items-start">
+            {loading ? <RoundedSkeleton m={1} ml={0} height={'56px'} width={'202px'} /> : manga.title && <Tooltip label={manga.title} hasArrow arrowSize={10} placement="top" >
+                <Heading className='animate-appear' >{manga.title}</Heading>
+            </Tooltip>}
+            {loading ? <RoundedSkeleton height={'112px'} width={'100%'} /> : manga.attributes &&
+                <>
+                    <Text mt={2} className={'animate-appear ' + (isExpanded ? 'text-justify' : 'text-justify line-clamp-3')}>
+                        {manga.attributes.description.en || ''}
+                    </Text>
+                    <Button className='animate-appear' mb={2} onClick={toggleLines} variant='link' colorScheme='blue' size='sm' >
+                        {isExpanded ? 'Read Less' : 'Read More'}
+                    </Button>
+                </>
+            }
+            <Box className={(isMobile ? 'flex flex-col gap-2' : 'grid grid-cols-2 gap-2 ') + ' lg:flex md:gap-4 my-2'}>
+                {loading ? <RoundedSkeleton height={'40px'} width={'100px'} /> : manga.status && <TagRenderer sm={'lg'} colorScheme={MangaStatusColors[manga.status]}>{manga.year || 'unknown'} - {manga.status}</TagRenderer>}
+                {loading ? <RoundedSkeleton height={'40px'} width={'72px'} /> : manga.rating && <TagRenderer sm={'lg'} colorScheme={manga.rating.color}><StarIcon boxSize={3} />{manga.rating.value.toFixed(2)}</TagRenderer>}
+                {loading ? <RoundedSkeleton height={'40px'} width={'84px'} /> : manga.follows && <TagRenderer sm={'lg'} ><BellIcon boxSize={3} />{manga.follows}</TagRenderer>}
+                {loading ? <RoundedSkeleton height={'40px'} width={'120px'} /> : (
+                    (isDownloadLimitReached && manga.id) ?
+                        <TagRenderer sm={'lg'} colorScheme={'red'}>
+                            {`Max of ${downloadLimit} downloads reached`}
+                        </TagRenderer>
+                        :
+                        manga.id && <ButtonGroup className='animate-appear' rounded={'lg'} isAttached variant='outline' onClick={onClickDownload}>
+                            <Button isLoading={disableMangaDownload} loadingText='Preparing Zips'>Download</Button>
+                            {!disableMangaDownload && <IconButton aria-label={'download-icon-manga'} icon={<DownloadIcon />} />}
+                        </ButtonGroup>)
                 }
             </Box>
         </Box>
     </Box>
 }
 
-const MangaFeed = ({ id, title }) => {
+const MangaFeed = ({ id, title, loading }) => {
     const volumes = useSelector((state) => state.manga.volumes);
     const dispatch = useDispatch()
     const pendingList = useSelector((state) => state.mangaDownloader.preparingZips)
@@ -108,19 +117,20 @@ const MangaFeed = ({ id, title }) => {
         dispatch(downloadMangaByVolumeOrChapter(params))
     };
 
-    return <Accordion className=" w-full" allowMultiple>
-        <Grid gap={6} templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(3, 1fr)", lg: "repeat(4, 1fr)" }} >
-            {volumes && volumes.length > 0 && volumes.map((volume) => volume.chapters.length > 0 &&
-                <VolumeList
-                    key={volume.volume}
-                    currentPendingList={currentPendingList}
-                    title={title}
-                    volume={volume}
-                    onClickDownload={onClickDownload}
-                    method={method}
-                />)}
-        </Grid>
-    </Accordion>
+    return loading ? <Button variant={'outline'} isLoading={true} loadingText='Loading Volumes' className='my-4 md:my-12' /> :
+        <Accordion className=" w-full" allowMultiple>
+            <Grid gap={6} templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(3, 1fr)", lg: "repeat(4, 1fr)" }} className='animate-appear'>
+                {volumes && volumes.length > 0 && volumes.map((volume) => volume.chapters.length > 0 &&
+                    <VolumeList
+                        key={volume.volume}
+                        currentPendingList={currentPendingList}
+                        title={title}
+                        volume={volume}
+                        onClickDownload={onClickDownload}
+                        method={method}
+                    />)}
+            </Grid>
+        </Accordion>
 }
 
 const VolumeList = ({ method, currentPendingList, volume, title, onClickDownload }) => {
