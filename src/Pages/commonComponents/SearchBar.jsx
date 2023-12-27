@@ -96,16 +96,18 @@ export function Items({ manga, dark }) {
     return <Box bg={dark ? 'blackAlpha.600' : '#adcdf7'}
         className="flex w-full p-1 items-center  my-2 mx-8 lg:mx-10 md:p-1 lg:p-2 rounded-md shadow-xl hover:scale-105 delay-75 transition-all ease-in-out duration-150 ">
         {!imageData ? <Box width={'52px'}> <Skeleton height={'52px'} width={'52px'} /> </Box> :
-            <Image boxSize={'8%'} className="aspect-square" aspectRatio={'square'} objectFit='contain' src={imageData} alt='m' display={!imageData && 'none'}
+            <Image boxSize={'8%'} p={1} minW={'52px'} minH={'52px'} rounded={'md'} objectFit='contain' src={imageData} alt='m' display={!imageData && 'none'}
             />}
         <Box className="ml-2">
             <Tooltip label={manga.title} hasArrow arrowSize={10} placement="top" >
                 <Text noOfLines={2}>{manga.title}</Text>
             </Tooltip>
-            <Box className="flex flex-col md:flex-row gap-2 md:gap-2">
+            <Box className="flex flex-col md:flex-row gap-2">
                 {manga.status && <TagRenderer colorScheme={MangaStatusColors[manga.status]}>{manga.year || 'unknown'} - {manga.status}</TagRenderer>}
-                {manga.rating.value && <TagRenderer colorScheme={manga.rating.color}><StarIcon boxSize={3} />{manga.rating.value.toFixed(2)}</TagRenderer>}
-                {manga.follows && <TagRenderer ><BellIcon boxSize={3} />{manga.follows}</TagRenderer>}
+                <Box className="gap-2 flex">
+                    {manga.rating.value && <TagRenderer colorScheme={manga.rating.color}><StarIcon boxSize={3} />{manga.rating.value.toFixed(2)}</TagRenderer>}
+                    {manga.follows && <TagRenderer ><BellIcon boxSize={3} />{manga.follows}</TagRenderer>}
+                </Box>
             </Box>
         </Box>
     </Box>
