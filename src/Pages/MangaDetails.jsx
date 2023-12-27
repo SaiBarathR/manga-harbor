@@ -40,7 +40,7 @@ export default function MangaDetails() {
 const MangaDetailsHeader = ({ manga = {}, loading = false, dispatch }) => {
 
     const [isExpanded, setIsExpanded] = useState(false);
-    const imageData = useMangaImage(manga.image)
+    const { imageData, loading: loadingImage } = useMangaImage(manga.image)
     const volumes = useSelector((state) => state.manga.volumes);
     const pendingList = useSelector((state) => state.mangaDownloader.preparingZips)
     const downloadLimit = useSelector((state) => state.mangaDownloader.downloadLimit)
@@ -64,8 +64,8 @@ const MangaDetailsHeader = ({ manga = {}, loading = false, dispatch }) => {
     };
 
     return <Box _dark={{ bg: 'blackAlpha.600' }} bg={'#adcdf7'} className="flex overflow-auto flex-col gap-2 md:flex-row w-full p-2 items-center animate-appear my-4 md:my-2 mx-8 lg:mx-10 md:p-4 lg:p-4 rounded-md shadow-xl">
-        {(!imageData || loading) ? <RoundedSkeleton minW={'202px'} minH={'330px'} maxW={'10%'} maxH={'10%'} /> :
-            <Image rounded={'lg'} maxW={'10%'} maxH={'10%'} src={imageData} alt='m' display={!imageData && 'none'} minW={'202px'} minH={'330px'} objectFit='contain' className='animate-appear' />
+        {(!imageData || loadingImage || loading) ? <RoundedSkeleton minW={'202px'} minH={'330px'} maxW={'10%'} maxH={'10%'} /> :
+            manga.id && <Image rounded={'lg'} maxW={'10%'} maxH={'10%'} src={imageData} alt='m' display={!imageData && 'none'} minW={'202px'} minH={'330px'} objectFit='contain' className='animate-appear' />
         }
         <Box className="md:ml-8 gap-3 self-start flex flex-col items-center w-full md:items-start">
             {loading ? <RoundedSkeleton m={1} ml={0} height={'56px'} width={'202px'} /> : manga.title && <Tooltip label={manga.title} hasArrow arrowSize={10} placement="top" >
