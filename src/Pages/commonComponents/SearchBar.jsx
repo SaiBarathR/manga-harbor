@@ -49,6 +49,12 @@ function SearchBar({ isMangaDetailsPage = false }) {
         navigate(`/manga/${originalValue}`)
     }
 
+    const handleFocus = () => {
+        if (searchValue && options.length === 0) {
+            dispatch(fetchMangaByName(searchValue))
+        }
+    }
+
     return (
         <Box className="min-w-[300px] max-w-[1200px] w-[80%]">
             <AutoComplete openOnFocus rollNavigation={true} onSelectOption={onSelectOption} disableFilter={true} isLoading={loading}>
@@ -67,6 +73,7 @@ function SearchBar({ isMangaDetailsPage = false }) {
                         loadingIcon={<></>}
                         id='search-bar-input'
                         ref={searchInputRef}
+                        onFocus={handleFocus}
                     />
                     {searchValue && <InputRightElement height={'100%'} >
                         <IconButton _hover={{ bg: dark ? '#676973' : '#adadc7' }} bg={dark ? 'gray' : 'whiteAlpha.300'} size={'xs'} onClick={() => handleChangeSearchVal({ target: { value: "" } })}>
