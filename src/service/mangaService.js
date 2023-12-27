@@ -1,4 +1,4 @@
-import app from '../config/app.json'
+import app from '../config/config.json'
 import axios from 'axios';
 import { updateItemsToDownload } from '../store/mangaDownloaderSlice';
 
