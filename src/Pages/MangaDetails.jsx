@@ -83,7 +83,7 @@ const MangaDetailsHeader = ({ manga = {}, loading = false, dispatch }) => {
             }
             <Box className={(isMobile ? 'flex flex-col gap-2' : 'grid grid-cols-2 gap-2 ') + ' lg:flex md:gap-4 my-2'}>
                 {loading ? <RoundedSkeleton height={'40px'} width={'100px'} /> : manga.status && <TagRenderer sm={'lg'} colorScheme={MangaStatusColors[manga.status]}>{manga.year || 'unknown'} - {manga.status}</TagRenderer>}
-                {loading ? <RoundedSkeleton height={'40px'} width={'72px'} /> : manga.rating && <TagRenderer sm={'lg'} colorScheme={manga.rating.color}><StarIcon boxSize={3} />{manga.rating.value.toFixed(2)}</TagRenderer>}
+                {loading ? <RoundedSkeleton height={'40px'} width={'72px'} /> : manga.rating && manga.rating.value && <TagRenderer sm={'lg'} colorScheme={manga.rating.color}><StarIcon boxSize={3} />{manga.rating.value.toFixed(2)}</TagRenderer>}
                 {loading ? <RoundedSkeleton height={'40px'} width={'84px'} /> : manga.follows && <TagRenderer sm={'lg'} ><BellIcon boxSize={3} />{manga.follows}</TagRenderer>}
                 {loading ? <RoundedSkeleton height={'40px'} width={'120px'} /> : (
                     (isDownloadLimitReached && manga.id) ?
