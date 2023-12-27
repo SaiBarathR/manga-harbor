@@ -13,8 +13,8 @@ const Header = () => {
     const onClickHeader = () => navigate('/');
 
     return (
-        <Box className={"flex flex-col gap-4 items-center px-2  min-h-[100px] w-full transition-all duration-500 ease-in-out" + (isMangaDetailsPage ? " h-[10%] max-h-[100px] justify-center md:flex-row md:justify-between " : " h-screen justify-start pt-[10%]")}>
-            <Box className="flex gap-2 items-center min-w-[280px] transition-all duration-500 ease-in-out">
+        <Box className={"flex flex-col gap-4 items-center px-2  min-h-[100px] w-full transition-all duration-300 ease-in-out" + (isMangaDetailsPage ? " h-[10%] max-h-[100px] justify-center md:flex-row md:justify-between " : " h-screen justify-start pt-[10%]")}>
+            <Box className="flex gap-2 items-center min-w-[280px] transition-all duration-300 ease-in-out">
                 <DisplayImage imgSrc={HeaderImage} boxProps={{ onClick: onClickHeader, cursor: 'pointer' }} />
                 <Text className="text-2xl font-bold cursor-pointer" onClick={onClickHeader}>
                     MangaHarbor
