@@ -91,11 +91,11 @@ function SearchBar({ isMangaDetailsPage = false }) {
 export const TagRenderer = ({ colorScheme, children, size = 'sm' }) => <Tag className="animate-appear" rounded={'md'} gap={size === 'lg' ? 3 : 1} p={size === 'lg' && 2} fontSize={size === 'lg' && 18} fontWeight={'bold'} width={'fit-content'} colorScheme={colorScheme}>{children}</Tag>
 
 export function Items({ manga, dark, isMangaDetailsPage }) {
-    const { imageData } = useMangaImage(manga.image)
+    const { imageData, loading } = useMangaImage(manga.image)
 
     return <Box bg={dark ? 'blackAlpha.600' : '#adcdf7'}
         className="flex w-full p-1 items-center  my-2 mx-8 lg:mx-10 md:p-1 lg:p-2 rounded-md shadow-xl hover:scale-105 delay-75 transition-all ease-in-out duration-150 ">
-        {!imageData ? <Box width={'52px'}> <Skeleton height={'52px'} width={'52px'} /> </Box> :
+        {(!imageData || loading) ? <Box width={'52px'}> <Skeleton height={'52px'} width={'52px'} /> </Box> :
             <Image p={{ sm: 0.5, md: 0 }} maxW={isMangaDetailsPage ? '7%' : '5%'} maxH={isMangaDetailsPage ? '7%' : '5%'} minW={'52px'} minH={'52px'} rounded={'md'} objectFit='contain' src={imageData} alt='manga' display={!imageData && 'none'}
             />}
         <Box className="ml-2">
