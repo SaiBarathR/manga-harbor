@@ -96,7 +96,7 @@ export function Items({ manga, dark }) {
     return <Box bg={dark ? 'blackAlpha.600' : '#adcdf7'}
         className="flex w-full p-1 items-center  my-2 mx-8 lg:mx-10 md:p-1 lg:p-2 rounded-md shadow-xl hover:scale-105 delay-75 transition-all ease-in-out duration-150 ">
         {!imageData ? <Box width={'52px'}> <Skeleton height={'52px'} width={'52px'} /> </Box> :
-            <Image boxSize={'8%'} p={1} minW={'52px'} minH={'52px'} rounded={'md'} objectFit='contain' src={imageData} alt='m' display={!imageData && 'none'}
+            <Image p={1} maxW={'7%'} maxH={'7%'} minW={'52px'} minH={'52px'} rounded={'md'} objectFit='contain' src={imageData} alt='manga' display={!imageData && 'none'}
             />}
         <Box className="ml-2">
             <Tooltip label={manga.title} hasArrow arrowSize={10} placement="top" >

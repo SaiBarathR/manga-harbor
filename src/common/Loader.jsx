@@ -11,6 +11,5 @@ export default function Loader() {
                 size='xl'
             />
         </div>
-
     )
 }
