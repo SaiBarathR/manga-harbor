@@ -1,5 +1,4 @@
 import { Spinner } from '@chakra-ui/react'
-import { Text } from '@chakra-ui/react'
 
 export default function Loader() {
     return (
@@ -11,9 +10,6 @@ export default function Loader() {
                 color='blue.500'
                 size='xl'
             />
-            <Text className="text-2xl font-bold text-center md:text-left">
-                Give us a moment, we are preparing your manga
-            </Text>    
         </div>
 
     )
