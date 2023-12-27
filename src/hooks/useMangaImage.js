@@ -4,10 +4,18 @@ import MangaService from "../service/mangaService";
 export default function useMangaImage(source) {
 
     const [imageData, setImageData] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const getCoverImage = async () => {
-        try { setImageData(URL.createObjectURL(new Blob([await MangaService.get('cover', source, 'image')], { type: 'image/jpeg' }))); }
-        catch (error) { console.log(error) }
+        setLoading(true);
+        try {
+            setImageData(URL.createObjectURL(new Blob([await MangaService.get('cover', source, 'image')], { type: 'image/jpeg' })));
+            setLoading(false);
+        }
+        catch (error) {
+            console.log(error)
+            setLoading(false);
+        }
     }
 
     useEffect(() => {
@@ -16,6 +24,6 @@ export default function useMangaImage(source) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [source])
 
-    return imageData;
+    return { imageData, loading };
 
 }
