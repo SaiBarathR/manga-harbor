@@ -1,0 +1,15 @@
+{
+    "urls": {
+        "manga": "manga/",
+        "tags": "manga/tag",
+        "grpMangaStats": "statistics/manga",
+        "search": "manga/search/",
+        "cover": "manga/cover?url=",
+        "download": "manga/download/",
+        "volumes": "manga/volumeList/"
+    },
+    "baseUrl": {
+        "springBoot": "http://52.172.34.172:9000/",
+        "mangaDex": "https://api.mangadex.org/"
+    }
+}
