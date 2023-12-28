@@ -19,6 +19,7 @@ export default function useMangaImage(source) {
     }
 
     useEffect(() => {
+        setImageData(false);
         const getData = setTimeout(() => { source && getCoverImage() }, 200)
         return () => clearTimeout(getData)
         // eslint-disable-next-line react-hooks/exhaustive-deps
