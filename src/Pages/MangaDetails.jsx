@@ -17,7 +17,8 @@ const RoundedSkeleton = (props) => <Skeleton rounded={'md'} {...props} />
 export default function MangaDetails() {
 
     const mangaDetails = useSelector((state) => state.manga.mangaDetails);
-    const loading = useSelector((state) => state.manga.loading);
+    const [delayLoading, setDelayLoading] = useState(false);
+    const loading = useSelector((state) => state.manga.loading) || delayLoading;
 
     const dispatch = useDispatch()
     const { mangaId } = useParams()
@@ -29,11 +30,17 @@ export default function MangaDetails() {
         }
     }, [mangaId, dispatch])
 
-    return <Box className='w-[96%]'>
-        <Box className='flex flex-col items-center'>
-            <MangaDetailsHeader loading={loading} manga={mangaDetails} dispatch={dispatch} />
-            <MangaFeed loading={loading} id={mangaDetails.id || null} title={mangaDetails.title || null} />
-        </Box>
+    useEffect(() => {
+        if (loading) {
+            setDelayLoading(true)
+            const delay = setTimeout(() => setDelayLoading(false), 500)
+            return () => clearTimeout(delay)
+        }
+    }, [loading])
+
+    return <Box className='w-[96%] flex flex-col items-center'>
+        <MangaDetailsHeader loading={loading} manga={mangaDetails} dispatch={dispatch} />
+        <MangaFeed loading={loading} id={mangaDetails.id || null} title={mangaDetails.title || null} />
     </Box>
 }
 
