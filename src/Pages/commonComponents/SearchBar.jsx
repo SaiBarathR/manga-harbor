@@ -1,5 +1,5 @@
 import { BellIcon, Search2Icon, SmallCloseIcon, StarIcon } from "@chakra-ui/icons";
-import { Box, IconButton, Image, InputGroup, InputLeftElement, InputRightElement, Skeleton, Stack, Tag, Text, Tooltip, useColorMode } from "@chakra-ui/react";
+import { Box, Kbd, IconButton, Image, InputGroup, InputLeftElement, InputRightElement, Skeleton, Stack, Tag, Text, Tooltip, useColorMode } from "@chakra-ui/react";
 import { AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList } from "@choc-ui/chakra-autocomplete";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMangaByName, setLoading, setSearchValue } from "../../store/searchSlice";
@@ -7,6 +7,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { MangaStatusColors } from "../../config/constants";
 import useMangaImage from "../../hooks/useMangaImage";
 import { useNavigate } from "react-router-dom";
+import { useMediaQuery } from "@chakra-ui/media-query";
 
 function SearchBar({ isMangaDetailsPage = false }) {
     const searchValue = useSelector((state) => state.search.searchValue);
@@ -18,6 +19,7 @@ function SearchBar({ isMangaDetailsPage = false }) {
     const handleChangeSearchVal = ({ target: { value } }) => dispatch(setSearchValue(value));
     const navigate = useNavigate()
     const searchInputRef = useRef(null);
+    const [isMobile] = useMediaQuery("(max-width: 768px)")
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -63,6 +65,7 @@ function SearchBar({ isMangaDetailsPage = false }) {
                         <Search2Icon color={dark ? 'gray.300' : 'blackAlpha.500'} />
                     </InputLeftElement>
                     <AutoCompleteInput variant="filled" placeholder="search"
+                        inputMode="search"
                         size={isMangaDetailsPage ? 'md' : 'lg'}
                         rounded={'md'} border={'none'} outline={'none'}
                         bg={dark ? '#2C2C2C' : '#D8E8FE'}
@@ -91,6 +94,7 @@ function SearchBar({ isMangaDetailsPage = false }) {
                     })}
                 </AutoCompleteList>
             </AutoComplete >
+            {!isMangaDetailsPage && !isMobile && <Text className="flex w-full justify-center my-2 gap-2 items-center" fontSize={'sm'} color={dark ? 'gray.400' : 'gray.900'}>Press <Kbd>Ctrl</Kbd> + <Kbd>K</Kbd> to Search</Text>}
         </Box>
     );
 }
@@ -103,7 +107,7 @@ export function Items({ manga, dark, isMangaDetailsPage }) {
     return <Box bg={dark ? 'blackAlpha.600' : '#adcdf7'}
         className="flex w-full p-1 items-center  my-2 mx-8 lg:mx-10 md:p-1 lg:p-2 rounded-md shadow-xl hover:scale-105 delay-75 transition-all ease-in-out duration-150 ">
         {(!imageData || loading) ? <Box width={'52px'}> <Skeleton height={'52px'} width={'52px'} /> </Box> :
-            <Image p={{ sm: 0.5, md: 0 }} maxW={isMangaDetailsPage ? '7%' : '5%'} maxH={isMangaDetailsPage ? '7%' : '5%'} minW={'52px'} minH={'52px'} rounded={'md'} objectFit='contain' src={imageData} alt='manga' display={!imageData && 'none'}
+            <Image p={{ sm: 0.5, md: 0 }} maxW={isMangaDetailsPage ? '6%' : '5%'} maxH={isMangaDetailsPage ? '6%' : '5%'} minW={'52px'} minH={'52px'} rounded={'md'} objectFit='contain' src={imageData} alt='manga' display={!imageData && 'none'}
             />}
         <Box className="ml-2">
             <Tooltip label={manga.title} hasArrow arrowSize={10} placement="top" >
