@@ -4,6 +4,7 @@ Manga Harbor is a web application that allows users to discover, search, and dow
 
 ## Table of Contents
 
+- [Screenshots](#screenshots)
 - [Prerequisites](#prerequisites)
 - [Steps to Run the React App with Manga Harbor Spring Server](#steps-to-run-the-react-app-with-manga-harbor-spring-server)
   - [Clone the Repositories](#1-clone-the-repositories)
@@ -30,6 +31,24 @@ Manga Harbor is a web application that allows users to discover, search, and dow
 - [Manga Harbor Server Integration](#manga-harbor-server-integration)
 - [Manga Harbor Server Repository](#manga-harbor-server-repository)
 - [List of Topics](#list-of-topics)
+
+### Screenshots
+
+**Home**
+
+![Manga Harbor Home Page](https://github.com/SaiBarathR/manga-harbor/assets/58382813/b2916b5f-3eef-4a76-9dd7-66131615002d)
+
+**Search**
+
+![Manga Harbor Search Results](https://github.com/SaiBarathR/manga-harbor/assets/58382813/2366b7df-161a-496f-b47b-3417422067d3)
+
+**Manga Details**
+
+![Manga Harbor Manga Details](https://github.com/SaiBarathR/manga-harbor/assets/58382813/5bf7d4e7-451a-42a0-a3d8-9e2d761f2f83)
+
+**Download Preview**
+
+![Manga Harbor Download Options](https://github.com/SaiBarathR/manga-harbor/assets/58382813/ef81342f-4236-4f79-8c22-7e392fd1c3da)
 
 ### Prerequisites
 
