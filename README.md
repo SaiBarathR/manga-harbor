@@ -2,6 +2,8 @@
 
 Manga Harbor is a web application that allows users to discover, search, and download manga. It provides a user-friendly interface to explore a vast collection of manga titles and download them for offline reading. This repository contains the client-side code for Manga Harbor, which interacts with the Manga Harbor Server to fetch manga data and handle downloads.
 
+For Service Repo: https://github.com/SaiBarathR/manga-harbor-server
+
 ## Table of Contents
 
 - [Screenshots](#screenshots)
