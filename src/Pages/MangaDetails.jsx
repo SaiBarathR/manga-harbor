@@ -1,6 +1,6 @@
 import {
     Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, ButtonGroup, Grid,
-    GridItem, Heading, IconButton, Image, List, ListItem, Skeleton, Text, Tooltip, useMediaQuery
+    GridItem, Heading, IconButton, Image, List, ListItem, Skeleton, Text, Tooltip, useMediaQuery, Collapse
 } from '@chakra-ui/react'
 import { useEffect, useMemo, useState, } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -70,6 +70,28 @@ const MangaDetailsHeader = ({ manga = {}, loading = false, dispatch }) => {
         dispatch(downloadMangaByVolumeOrChapter(manga.id))
     };
 
+    function Description(
+        {
+            startingHeight = 20,
+            children,
+        }
+    ) {
+        const [show, setShow] = useState(false)
+
+        const handleToggle = () => setShow(!show)
+
+        return (
+            <>
+                <Collapse startingHeight={42} in={show}>
+                    {children}
+                </Collapse>
+                <Button onClick={handleToggle} size="sm" variant="link">
+                    {show ? 'Read Less' : 'Read More...'}
+                </Button>
+            </>
+        )
+    }
+
     return <Box _dark={{ bg: 'blackAlpha.600' }} bg={'#adcdf7'} className="flex overflow-auto flex-col gap-2 md:flex-row w-full p-2 items-center animate-appear my-4 md:my-2 mx-8 lg:mx-10 md:p-4 lg:p-4 rounded-md shadow-xl">
         {(!imageData || loadingImage || loading) ? <RoundedSkeleton minW={'202px'} minH={'330px'} maxW={'10%'} maxH={'10%'} /> :
             manga.id && <Image rounded={'lg'} maxW={'10%'} maxH={'10%'} src={imageData} alt='m' display={!imageData && 'none'} minW={'202px'} minH={'330px'} objectFit='contain' className='animate-appear' />
@@ -78,15 +100,10 @@ const MangaDetailsHeader = ({ manga = {}, loading = false, dispatch }) => {
             {loading ? <RoundedSkeleton m={1} ml={0} height={'56px'} width={'202px'} /> : manga.title && <Tooltip label={manga.title} hasArrow arrowSize={10} placement="top" >
                 <Heading className='animate-appear' >{manga.title}</Heading>
             </Tooltip>}
-            {loading ? <RoundedSkeleton height={'112px'} width={'100%'} /> : manga.attributes &&
-                <>
-                    <Text mt={2} className={'animate-appear ' + (isExpanded ? 'text-justify' : 'text-justify line-clamp-3')}>
+            {loading ? <RoundedSkeleton height={'112px'} width={'100%'} /> : manga.attributes &&                
+                <Description>
                         {manga.attributes.description.en || ''}
-                    </Text>
-                    <Button className='animate-appear' mb={2} onClick={toggleLines} variant='link' colorScheme='blue' size='sm' >
-                        {isExpanded ? 'Read Less' : 'Read More'}
-                    </Button>
-                </>
+                </Description>
             }
             <Box className={(isMobile ? 'flex flex-col gap-2' : 'grid grid-cols-2 gap-2 ') + ' lg:flex md:gap-4 my-2'}>
                 {loading ? <RoundedSkeleton height={'40px'} width={'100px'} /> : manga.status && <TagRenderer sm={'lg'} colorScheme={MangaStatusColors[manga.status]}>{manga.year || 'unknown'} - {manga.status}</TagRenderer>}
