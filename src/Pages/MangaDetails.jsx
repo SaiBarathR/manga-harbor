@@ -46,7 +46,6 @@ export default function MangaDetails() {
 
 const MangaDetailsHeader = ({ manga = {}, loading = false, dispatch }) => {
 
-    const [isExpanded, setIsExpanded] = useState(false);
     const { imageData, loading: loadingImage } = useMangaImage(manga.image)
     const volumes = useSelector((state) => state.manga.volumes);
     const pendingList = useSelector((state) => state.mangaDownloader.preparingZips)
@@ -55,7 +54,6 @@ const MangaDetailsHeader = ({ manga = {}, loading = false, dispatch }) => {
     const method = (currentPendingList.length > 0 && currentPendingList[0].method) ? currentPendingList[0].method : null;
     const isDownloadLimitReached = (downloadLimit <= pendingList.length)
     const disableMangaDownload = method || isDownloadLimitReached
-    const toggleLines = () => setIsExpanded(!isExpanded);
     const [isMobile] = useMediaQuery("(max-width: 500px)")
 
     const onClickDownload = async () => {
