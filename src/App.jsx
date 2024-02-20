@@ -6,7 +6,7 @@ import { Box } from '@chakra-ui/react';
 
 function App() {
   const bg = useColorModeValue('white', 'black')
-  const bgGradient = useColorModeValue('linear(to-r, gray.500, blue.500)', 'linear(to-r, gray.800, blue.700)')
+  const bgGradient = useColorModeValue('linear(to-r, gray.500, blue.500)', 'linear(to-r, gray.900, gray.900)')
   const color = useColorModeValue('black', 'white')
 
   return (
