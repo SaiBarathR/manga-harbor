@@ -1,9 +1,10 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Text, } from "@chakra-ui/react";
 import SearchBar from "./commonComponents/SearchBar";
 import DisplayImage from "./commonComponents/DisplayImage";
 import HeaderImage from '../icons/headerIcon.png'
 import { ThemeSwitcher } from "./commonComponents/ModeSwitcherButton";
 import { useLocation, useNavigate } from "react-router-dom";
+import AdditionalInfo from "../utils/AdditionalInfo";
 
 const Header = () => {
 
@@ -19,10 +20,11 @@ const Header = () => {
                 <Text className="text-2xl font-bold cursor-pointer" onClick={onClickHeader}>
                     MangaHarbor
                 </Text>
+                <AdditionalInfo />
                 <ThemeSwitcher />
             </Box>
             <SearchBar isMangaDetailsPage={isMangaDetailsPage} />
-        </Box >
+        </Box>
     );
 }
 
