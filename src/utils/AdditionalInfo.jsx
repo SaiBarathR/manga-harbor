@@ -38,7 +38,6 @@ export default function AdditionalInfo() {
                             Currently the application is in development and may not be fully functional. Only chapter download feature is available due to heroku's request timeout limit which will be fixed in the future.
                             If you want to use the application to its full potential, you can clone the repository and run it locally with all its features.
                         </Text>
-
                     </ModalBody>
                     <ModalFooter>
                         <Link href="https://github.com/SaiBarathR/manga-harbor" isExternal color='blue.500'>
