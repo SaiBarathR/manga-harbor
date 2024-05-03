@@ -7,7 +7,7 @@ const DownloadManager = lazy(() => import("./DownloadManager"));
 
 const Home = () => {
     return <Suspense fallback={<Loader />}>
-        < Header />
+        <Header />
         <Outlet />
         <DownloadManager />
     </Suspense >
