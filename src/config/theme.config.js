@@ -10,8 +10,8 @@ var config = {
         transparent: "transparent",
         black: "#000",
         white: "#fff",
-        ligthGreen:'#68D391',
-        gold:'#FFD700',
+        ligthGreen: '#68D391',
+        gold: '#FFD700',
         gray: {
             50: "#f7fafc",
             // ...
@@ -149,8 +149,8 @@ var config = {
 export var themeConfig = {
     ...config,
     config: {
-        initialColorMode: "system",
-        useSystemColorMode: "true"
+        initialColorMode: "dark",
+        // useSystemColorMode: "true"
     },
     sizes: {
         sizes: {
