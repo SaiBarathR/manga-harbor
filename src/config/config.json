@@ -9,7 +9,7 @@
         "volumes": "manga/volumeList/"
     },
     "baseUrl": {
-        "springBoot": "http://52.172.34.172:9000/",
+        "springBoot": "http://localhost:1290/",
         "mangaDex": "https://api.mangadex.org/"
     }
 }

@@ -1,7 +1,2 @@
-.App {
-  font-family: 'Roboto', sans-serif;
-  height: 100%;
-  width: 100%;
-  min-height: 100vh;
-  max-height: none !important;
-}
+/* Cleaned up App.css */
+/* Most styles should be in index.css or using Tailwind classes */
